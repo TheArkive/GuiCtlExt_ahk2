@@ -19,18 +19,20 @@ ctl.Opt("+Report")
 ctl.ModifyCol()
 
 g.Add("ListBox","w100 h100 vLB",["ListBox Item 1","ListBox Item 2","ListBox Item 3"])
-g.Add("ComboBox","x+10 yp w100 h100 vCB",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4"])
+g.Add("ComboBox","x+10 yp w100 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4"])
 
-btn := g.Add("Button","vPicBtn w24 h24")
+btn := g.AddPicButton("vPicBtn w24 h24","netshell.dll","Icon151 w20 h20")
 btn.OnEvent("click",gui_events)
-btn.SetImg("netshell.dll","Icon151 w20 h20")
 
 btn := g.Add("Button","vData x+0","Show Data")
 btn.OnEvent("Click",gui_events)
 
-btn := g.Add("Button","vDropBtn1 h32 w48","")
+btn := g.AddSplitButton("vDropBtn1 xs h32 w48","",gui_events) ; here the callback is only for clicking the split down arrow
+btn.OnEvent("click",gui_events) ; this is for when you click the "normal" part of the button
+btn.SetImg("netshell.dll","Icon151 w20 h20")
+
+btn := g.AddToggleButton("vToggleBtn w48 h32","")
 btn.OnEvent("click",gui_events)
-btn.SetSplit(gui_events)
 btn.SetImg("netshell.dll","Icon151 w20 h20")
 
 g.show()
@@ -72,7 +74,8 @@ gui_events(ctl, info) {
              . "`tItemText Row " CBr ": " g["CB"].GetText(CBr) "`r`n"
              . "`tRow Count: " g["CB"].GetCount() "`r`n`r`n"
              . "`tItems:`r`n" CBi
-    }
+    } Else If (ctl.name = "ToggleBtn")
+        Msgbox "Value: " ctl.Value
 }
 
 m(coords) {

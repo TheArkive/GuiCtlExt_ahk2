@@ -59,36 +59,74 @@ class ListView_Ext extends Gui.ListView { ; Technically no need to extend classe
     }
 }
 
-class BtnExt extends Gui.Button {
-    ; _ImgType := 0
+class PicButton extends Gui.Button {
     Static __New() {
-        For prop in this.Prototype.OwnProps()
-            super.Prototype.%prop% := this.Prototype.%prop%
-        ; super.Prototype._ImgType := this.Prototype._ImgType
+        Gui.Prototype.AddPicButton := this.AddPicButton
+    }
+    Static AddPicButton(sOptions:="",sPicFile:="",sPicFileOpt:="") {
+        ctl := this.Add("Button",sOptions)
+        ctl.base := PicButton.Prototype
+        ctl.SetImg(sPicFile, sPicFileOpt)
+        return ctl
     }
     SetImg(sFile, sOptions:="") { ; input params exact same as first 2 params of LoadPicture()
-        Static ImgType := 0
+        Static ImgType := 0       ; thanks to teadrinker: https://www.autohotkey.com/boards/viewtopic.php?p=299834#p299834
+        Static BS_ICON := 0x40, BS_BITMAP := 0x80, BM_SETIMAGE := 0xF7
+        
+        hImg := LoadPicture(sFile, sOptions, &_type)
         curStyle := ControlGetStyle(this.hwnd)
-        ControlSetStyle (curStyle | 0x40), this.hwnd
-        hIco := LoadPicture(sFile, sOptions, &type)
-        hOldImg := SendMessage(0xF7, type, hIco, this.hwnd) ; BM_SETIMAGE
+        ControlSetStyle (curStyle | (!_type?BS_BITMAP:BS_ICON)), this.hwnd
+        hOldImg := SendMessage(BM_SETIMAGE, _type, hImg, this.hwnd)
         
         If (hOldImg)
             (ImgType) ? DllCall("DestroyIcon","UPtr",hOldImg) : DllCall("DeleteObject","UPtr",hOldImg)
         
-        ImgType := type                             ; store current img type for next call/release
+        ImgType := _type ; store current img type for next call/release
     }
-    SetSplit(callback, def:=false) {
-        sty := ControlGetStyle(this.hwnd)
-        If !def
-            ControlSetStyle (sty | 0xC), this.hwnd
-        Else
-            ControlSetStyle (sty | 0x1 | 0xC), this.hwnd
-        this.callback := callback
-        this.OnNotify(-1248, ObjBindMethod(this,"DropCallback"))
+    Type {
+        get => "PicButton"
+    }
+}
+
+class SplitButton extends Gui.Button {
+    Static __New() {
+        super.Prototype.SetImg := PicButton.Prototype.SetImg
+        Gui.Prototype.AddSplitButton := this.AddSplitButton
+    }
+    Static AddSplitButton(sOptions:="",sText:="",callback:="") {
+        Static BS_SPLITBUTTON := 0xC
+        
+        ctl := this.Add("Button",sOptions,sText)
+        ctl.base := SplitButton.Prototype
+        
+        ControlSetStyle (ControlGetStyle(ctl.hwnd) | BS_SPLITBUTTON), ctl.hwnd
+        If callback
+            ctl.callback := callback
+          , ctl.OnNotify(-1248, ObjBindMethod(ctl,"DropCallback"))
+            
+        return ctl
     }
     DropCallback(ctl, lParam) {
         ctl.GetPos(&x,&y,,&h)
         f := this.callback, f(ctl,{x:x, y:y+h})
     }
+    Type {
+        get => "SplitButton"
+    }
 }
+
+class ToggleButton extends Gui.Checkbox {
+    Static __New() {
+        super.Prototype.SetImg := PicButton.Prototype.SetImg
+        Gui.Prototype.AddToggleButton := this.AddToggleButton
+    }
+    Static AddToggleButton(sOptions:="",sText:="") {
+        ctl := this.Add("Checkbox",sOptions " +0x1000",sText)
+        ctl.base := ToggleButton.Prototype
+        return ctl
+    }
+    Type {
+        get => "ToggleButton"
+    }
+}
+
