@@ -59,6 +59,19 @@ class ListView_Ext extends Gui.ListView { ; Technically no need to extend classe
     }
 }
 
+class StatusBar_Ext extends Gui.StatusBar {
+    Static __New() {
+        For prop in this.Prototype.OwnProps()
+            super.Prototype.%prop% := this.Prototype.%prop%
+    }
+    RemoveIcon(part:=1) {
+        hIcon := SendMessage(0x414, part-1, 0, this.hwnd)
+        If hIcon
+            SendMessage(0x40F, part-1, 0, this.hwnd)
+        return DllCall("DestroyIcon","UPtr",hIcon)
+    }
+}
+
 class PicButton extends Gui.Button {
     Static __New() {
         Gui.Prototype.AddPicButton := this.AddPicButton
@@ -106,6 +119,9 @@ class SplitButton extends Gui.Button {
             
         return ctl
     }
+    Drop() {
+        this.DropCallback(this,0)
+    }
     DropCallback(ctl, lParam) {
         ctl.GetPos(&x,&y,,&h)
         f := this.callback, f(ctl,{x:x, y:y+h})
@@ -130,3 +146,15 @@ class ToggleButton extends Gui.Checkbox {
     }
 }
 
+class Edit_Ext extends Gui.Edit {
+    Static __New() {
+        For prop in this.Prototype.OwnProps()
+            super.Prototype.%prop% := this.prototype.%prop%
+    }
+    Append(txt, top := false) {
+        txtLen := SendMessage(0x000E, 0, 0,,this.hwnd)           ;WM_GETTEXTLENGTH
+        pos := (!top) ? txtLen : 0
+        SendMessage(0x00B1, pos, pos,,this.hwnd)           ;EM_SETSEL
+        SendMessage(0x00C2, False, StrPtr(txt),,this.hwnd)    ;EM_REPLACESEL
+    }
+}
