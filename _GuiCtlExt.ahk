@@ -38,7 +38,7 @@ class ListBox_Ext extends Gui.ListBox {
 
 class ComboBox_Ext extends Gui.ComboBox {
     Static __New() {
-        super.Prototype.CueBanner := ""
+        super.Prototype._CueText := ""
         For prop, val in this.Prototype.OwnProps()
             super.Prototype.%prop% := this.Prototype.%prop%
         super.Prototype.DefineProp("CueText",{Get:this.Prototype.CueText
@@ -49,10 +49,10 @@ class ComboBox_Ext extends Gui.ComboBox {
     
     GetText(row) => this._GetString(0x149,0x148,row) ; 0x149 > CB_GETLBTEXTLEN // 0x148 > CB_GETLBTEXT
     
-    CueText(p*) { ; thanks to AHK_user for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
+    CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
         If !p.Length
-            return this.CueBanner
-        Else SendMessage(0x1703, 0, StrPtr(this.CueBanner:=p[1]), this.hwnd)
+            return this._CueText
+        Else SendMessage(0x1703, 0, StrPtr(this._CueText:=p[1]), this.hwnd)
     }
 }
 
@@ -165,7 +165,8 @@ class ToggleButton extends Gui.Checkbox {
 
 class Edit_Ext extends Gui.Edit {
     Static __New() {
-        super.Prototype.CueBanner := "" ; for easy get/read
+        super.Prototype._CueText := "" ; for easy get/read
+        super.Prototype._CueOption := false
         For prop in this.Prototype.OwnProps()
             super.Prototype.%prop% := this.prototype.%prop%
         super.Prototype.DefineProp("CueText",{Get:this.Prototype.CueText
@@ -177,9 +178,10 @@ class Edit_Ext extends Gui.Edit {
         SendMessage(0x00B1, pos, pos,,this.hwnd)           ;EM_SETSEL
         SendMessage(0x00C2, False, StrPtr(txt),,this.hwnd)    ;EM_REPLACESEL
     }
-    CueText(p*) { ; thanks to AHK_user for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
+    CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
         If !p.Length
-            return this.CueBanner
-        Else SendMessage(0x1501, 0, StrPtr(this.CueBanner:=p[1]), this.hwnd)
+            return this._CueText
+        Else SendMessage(0x1501, this._CueOption, StrPtr(this._CueText:=p[1]), this.hwnd)
     }
+    SetCueText(txt,option:=false) => SendMessage(0x1501, this._CueOption:=option, StrPtr(this._CueText:=txt), this.hwnd)
 }

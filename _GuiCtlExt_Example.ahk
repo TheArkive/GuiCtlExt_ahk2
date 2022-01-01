@@ -37,7 +37,8 @@ btn.OnEvent("click",gui_events)                         ; Remove button text to 
 btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
 ctl := g.Add("Edit","xm w200 vMyEdit1")
-ctl.CueText := "Test Cue Edit Text"
+ctl.SetCueText("Test Cue Edit Text",true) ; set/change option of cue to persist on control focus (instead of disappear)
+                                          ; ctl.CueText also works with edit control
 
 g.show("h300 w300")
 
@@ -98,4 +99,9 @@ m_event(item, pos, m) {
 dbg(_in) { ; AHK v2
     Loop Parse _in, "`n", "`r"
         OutputDebug "AHK: " A_LoopField
+}
+
+F2::{
+    Global g
+    g["MyEdit1"].CueText := "Change the cue!"
 }

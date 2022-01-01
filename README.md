@@ -112,5 +112,10 @@ Returns the width of the specified column.
 ### ctl.Append(text, top := false)
 Appends text to the bottom of the edit control, unless `top := true`, then text is prepended.
 
+### ctl.SetCueText(txt, Option := false)
+Sets cue text and option.
+If Option = true, then cue text will persist on control focus.
+If Option = false, then cue text will disappear on control focus (default).
+
 ### ctl.CueText
-Sets/Gets the cue text for the edit control.
+Sets/Gets the cue text for the edit control.  The option described above in `.SetCueText()` is not changed.
