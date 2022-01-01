@@ -20,9 +20,7 @@ ctl.ModifyCol()
 
 g.Add("ListBox","w100 h100 vLB",["ListBox Item 1","ListBox Item 2","ListBox Item 3"])
 ctl := g.Add("ComboBox","x+10 yp w100 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4"])
-ctl.SetCue("Text Cue Text")
-
-; g.show("h300 w300")
+ctl.CueText := "Test Cue Text"
 
 btn := g.AddPicButton("vPicBtn w50 h24","netshell.dll","Icon151 w20 h20","Test") ; 24 x 24
 btn.OnEvent("click",gui_events)
@@ -39,7 +37,7 @@ btn.OnEvent("click",gui_events)                         ; Remove button text to 
 btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
 ctl := g.Add("Edit","xm w200 vMyEdit1")
-ctl.SetCue("Test Cue Edit Text")
+ctl.CueText := "Test Cue Edit Text"
 
 g.show("h300 w300")
 
@@ -95,4 +93,9 @@ m(coords) {
 
 m_event(item, pos, m) {
     msgbox "You clicked: " item
+}
+
+dbg(_in) { ; AHK v2
+    Loop Parse _in, "`n", "`r"
+        OutputDebug "AHK: " A_LoopField
 }

@@ -38,22 +38,21 @@ class ListBox_Ext extends Gui.ListBox {
 
 class ComboBox_Ext extends Gui.ComboBox {
     Static __New() {
-        For prop in this.Prototype.OwnProps()
+        super.Prototype.CueBanner := ""
+        For prop, val in this.Prototype.OwnProps()
             super.Prototype.%prop% := this.Prototype.%prop%
+        super.Prototype.DefineProp("CueText",{Get:this.Prototype.CueText
+                                            , Set:this.Prototype.CueText})
     }
     
     GetCount() => SendMessage(0x146, 0, 0, this.hwnd)  ; CB_GETCOUNT
     
     GetText(row) => this._GetString(0x149,0x148,row) ; 0x149 > CB_GETLBTEXTLEN // 0x148 > CB_GETLBTEXT
     
-    SetCue(str, option := true) { ; thanks to AHK_user for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
-        ; Links ....................:  https://docs.microsoft.com/en-us/windows/win32/controls/cb-setcuebanner
-        ; Description ..............:  Sets the cue banner text that is displayed for the edit control of a combo box.
-        ; Option ...................:  True  -> if the cue banner should show even when the edit control has focus
-        ;                              False -> if the cue banner disappears when the user clicks in the control
-        if (DllCall("user32\SendMessage", "UPtr", this.hwnd, "UInt", 0x1703, "Int", option, "Str", str, "Int"))
-            return true
-        return false
+    CueText(p*) { ; thanks to AHK_user for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
+        If !p.Length
+            return this.CueBanner
+        Else SendMessage(0x1703, 0, StrPtr(this.CueBanner:=p[1]), this.hwnd)
     }
 }
 
@@ -166,8 +165,11 @@ class ToggleButton extends Gui.Checkbox {
 
 class Edit_Ext extends Gui.Edit {
     Static __New() {
+        super.Prototype.CueBanner := "" ; for easy get/read
         For prop in this.Prototype.OwnProps()
             super.Prototype.%prop% := this.prototype.%prop%
+        super.Prototype.DefineProp("CueText",{Get:this.Prototype.CueText
+                                            , Set:this.Prototype.CueText})
     }
     Append(txt, top := false) {
         txtLen := SendMessage(0x000E, 0, 0,,this.hwnd)           ;WM_GETTEXTLENGTH
@@ -175,13 +177,9 @@ class Edit_Ext extends Gui.Edit {
         SendMessage(0x00B1, pos, pos,,this.hwnd)           ;EM_SETSEL
         SendMessage(0x00C2, False, StrPtr(txt),,this.hwnd)    ;EM_REPLACESEL
     }
-    SetCue(str, option := true) { ; thanks to AHK_user for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
-        ; Links ....................:  https://docs.microsoft.com/en-us/windows/win32/controls/em-setcuebanner
-        ; Description ..............:  Sets the textual cue, or tip, that is displayed by the edit control to prompt the user for information.
-        ; Option ...................:  True  -> if the cue banner should show even when the edit control has focus
-        ;                              False -> if the cue banner disappears when the user clicks in the control
-        if (DllCall("user32\SendMessage", "UPtr", this.hwnd, "UInt", 0x1501, "Int", option, "Str", str, "Int")) ; EM_SETCUEBANNER
-            return true
-        return false
+    CueText(p*) { ; thanks to AHK_user for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
+        If !p.Length
+            return this.CueBanner
+        Else SendMessage(0x1501, 0, StrPtr(this.CueBanner:=p[1]), this.hwnd)
     }
 }

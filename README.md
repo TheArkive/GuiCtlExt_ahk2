@@ -93,13 +93,8 @@ Gets the text of the specified row.
 ### ctl.GetItems()
 Gets a linear array of all the items in the ListBox or ComboBox drop window.
 
-### ctl.SetCue(text, option:=true)
-Sets cue text for the ComboBox.
-```
-Option
-True  = Cue banner should show even when the edit control has focus.
-False = Cue banner disappears when the user clicks in the control.
-```
+### ctl.CueText
+Sets/Gets cue text for the ComboBox control.
 
 ## ListView
 
@@ -116,3 +111,6 @@ Returns the width of the specified column.
 
 ### ctl.Append(text, top := false)
 Appends text to the bottom of the edit control, unless `top := true`, then text is prepended.
+
+### ctl.CueText
+Sets/Gets the cue text for the edit control.
