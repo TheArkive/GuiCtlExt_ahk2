@@ -19,23 +19,29 @@ ctl.Opt("+Report")
 ctl.ModifyCol()
 
 g.Add("ListBox","w100 h100 vLB",["ListBox Item 1","ListBox Item 2","ListBox Item 3"])
-g.Add("ComboBox","x+10 yp w100 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4"])
+ctl := g.Add("ComboBox","x+10 yp w100 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4"])
+ctl.SetCue("Text Cue Text")
 
-btn := g.AddPicButton("vPicBtn w24 h24","netshell.dll","Icon151 w20 h20")
+; g.show("h300 w300")
+
+btn := g.AddPicButton("vPicBtn w50 h24","netshell.dll","Icon151 w20 h20","Test") ; 24 x 24
 btn.OnEvent("click",gui_events)
 
 btn := g.Add("Button","vData x+0","Show Data")
 btn.OnEvent("Click",gui_events)
 
-btn := g.AddSplitButton("vDropBtn1 xs h32 w48","",gui_events) ; here the callback is only for clicking the split down arrow
+btn := g.AddSplitButton("vDropBtn1 xs h32 w80","Test",gui_events) ; here the callback is only for clicking the split down arrow
 btn.OnEvent("click",gui_events) ; this is for when you click the "normal" part of the button
 btn.SetImg("netshell.dll","Icon151 w20 h20")
 
-btn := g.AddToggleButton("vToggleBtn w48 h32","")
-btn.OnEvent("click",gui_events)
-btn.SetImg("netshell.dll","Icon151 w20 h20")
+btn := g.AddToggleButton("vToggleBtn w80 h32","Test")   ; Icons+Text on a ToggleButton don't seem to work with native AHK gui.
+btn.OnEvent("click",gui_events)                         ; Remove button text to get a ToggleButton with an icon.
+btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
-g.show()
+ctl := g.Add("Edit","xm w200 vMyEdit1")
+ctl.SetCue("Test Cue Edit Text")
+
+g.show("h300 w300")
 
 gui_close(*) {
     ExitApp
@@ -74,8 +80,10 @@ gui_events(ctl, info) {
              . "`tItemText Row " CBr ": " g["CB"].GetText(CBr) "`r`n"
              . "`tRow Count: " g["CB"].GetCount() "`r`n`r`n"
              . "`tItems:`r`n" CBi
-    } Else If (ctl.name = "ToggleBtn")
+    }
+    Else If (ctl.name = "ToggleBtn") {
         Msgbox "Value: " ctl.Value
+    }
 }
 
 m(coords) {

@@ -1,13 +1,25 @@
 # GuiCtlExt_ahk2
 GuiControl extensions for AHK v2 controls
 
+```
+Contributions:
+
+AHK_user:
+- ctl.SetCue() for Edit and ComboBox
+
+just me:
+
+```
+
 ## Picture Button
 
-### Gui.AddPicButton(sOptions:="", sPicFile:="", sPicFileOpt:="")
+### Gui.AddPicButton(sOptions:="", sPicFile:="", sPicFileOpt:="", Text:="")
 
 `sOptions` are the normal options you would specify for any `Gui` control when invoking `Gui.Add()`.
 
-The last 2 parameters are the same as the first 2 parameters of LoadPicture().  For more info, see `ctl.SetImg()` below, or the AHK help files for LoadPicture().
+The sPicFile and sPicFileOpt parameters are the same as the first 2 parameters of LoadPicture().  For more info, see `ctl.SetImg()` below, or the AHK help files for LoadPicture().
+
+Text is optional.
 
 ### ctl.SetImg(sFile, sOptions:="")
 Sets or changes the image for a button.  Specify no text if you want an image button only.  Otherwise you will get the image and text.
@@ -59,7 +71,7 @@ Returns `"SplitButton"`.
 ### ctl.SetImg(sFile, sOptions:="")
 Same as PicButton above.
 
-## ListBox and ComboBox
+## ListBox
 
 ### ctl.GetCount()
 Returns number of items in Listbox or ComboBox drop window.
@@ -69,6 +81,25 @@ Gets the text of the specified row.
 
 ### ctl.GetItems()
 Gets a linear array of all the items in the ListBox or ComboBox drop window.
+
+## ComboBox
+
+### ctl.GetCount()
+Returns number of items in Listbox or ComboBox drop window.
+
+### ctl.GetText(row)
+Gets the text of the specified row.
+
+### ctl.GetItems()
+Gets a linear array of all the items in the ListBox or ComboBox drop window.
+
+### ctl.SetCue(text, option:=true)
+Sets cue text for the ComboBox.
+```
+Option
+True  = Cue banner should show even when the edit control has focus.
+False = Cue banner disappears when the user clicks in the control.
+```
 
 ## ListView
 
@@ -81,3 +112,7 @@ Returns the icon index for the row.  Note that the default index for all rows, e
 ### ctl.GetColWidth(col)
 Returns the width of the specified column.
 
+## Edit
+
+### ctl.Append(text, top := false)
+Appends text to the bottom of the edit control, unless `top := true`, then text is prepended.
