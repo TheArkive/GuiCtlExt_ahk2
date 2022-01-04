@@ -181,7 +181,8 @@ class Edit_Ext extends Gui.Edit {
     CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
         If !p.Length
             return this._CueText
-        Else SendMessage(0x1501, this._CueOption, StrPtr(this._CueText:=p[1]), this.hwnd)
+        Else If (p.Length = 2)
+            SendMessage(0x1501, (this._CueOption := (p[2]?p[2]:0)), StrPtr(this._CueText:=p[1]), this.hwnd)
     }
     SetCueText(txt,option:=false) => SendMessage(0x1501, this._CueOption:=option, StrPtr(this._CueText:=txt), this.hwnd)
 }
