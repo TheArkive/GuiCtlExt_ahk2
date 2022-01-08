@@ -1,5 +1,5 @@
 ; ==================================================================
-; GuiControl_Ex
+; GuiControl_Ext
 ; ==================================================================
 
 class ListComboBox_Ext { ; apply stuff to ComboBox and ListBox
@@ -38,21 +38,49 @@ class ListBox_Ext extends Gui.ListBox {
 
 class ComboBox_Ext extends Gui.ComboBox {
     Static __New() {
-        super.Prototype._CueText := ""
-        For prop, val in this.Prototype.OwnProps()
+        super.Prototype._CurCueText := ""
+        For prop in this.Prototype.OwnProps() 
             super.Prototype.%prop% := this.Prototype.%prop%
-        super.Prototype.DefineProp("CueText",{Get:this.Prototype.CueText
-                                            , Set:this.Prototype.CueText})
+        super.Prototype.DefineProp("CueText",{Get:this.Prototype._CueText,Set:this.Prototype._CueText})
+        
+        super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,"sel")})    ; 1st param is the instance, ...
+        super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,"start")}) ; ... so don't overwrite it.
+        super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,"end")})
+        
+        super.Prototype.AutoComplete := false
+    }
+    
+    _CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
+        If !p.Length
+            return this._CurCueText
+        Else SendMessage(0x1703, 0, StrPtr(this._CurCueText:=p[1]), this.hwnd)
+    }
+    
+    check_match(t:=false) {
+        For i, val in this.GetItems()
+            If (RegExMatch(val,"i)^\Q" (t?this.temp_value:this.Text) "\E") && (t?this.temp_value:this.Text))
+                return val
     }
     
     GetCount() => SendMessage(0x146, 0, 0, this.hwnd)  ; CB_GETCOUNT
     
     GetText(row) => this._GetString(0x149,0x148,row) ; 0x149 > CB_GETLBTEXTLEN // 0x148 > CB_GETLBTEXT
     
-    CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
-        If !p.Length
-            return this._CueText
-        Else SendMessage(0x1703, 0, StrPtr(this._CueText:=p[1]), this.hwnd)
+    SetSel(start:=0xFFFF,end:=0) {
+        dword := (start | (end << 16))
+        SendMessage(0x142, 0, dword, this.hwnd) ; CB_SETEDITSEL
+    }
+    
+    _SelText(p*) {
+        dword := SendMessage(0x140,0,0,this.hwnd) ; CB_GETEDITSEL
+        range := [start := (dword & 0xFFFF), end := ((dword >> 16) & 0xFFFF)]
+        
+        result := ""
+        Switch p[1] {
+            Case "sel": result := SubStr(this.Text,range[1]+1,range[2]-range[1])
+               Default: result := ((p[1]="start")?start:end)
+        }
+        return result
     }
 }
 
@@ -104,7 +132,7 @@ class PicButton extends Gui.Button {
         Static BS_ICON := 0x40, BS_BITMAP := 0x80, BM_SETIMAGE := 0xF7
         
         hImg := LoadPicture(sFile, sOptions, &_type)
-        If !this.Text
+        If !this.Text ; thanks to "just me" for advice on getting text and images to display
             ControlSetStyle (ControlGetStyle(this.hwnd) | (!_type?BS_BITMAP:BS_ICON)), this.hwnd
         hOldImg := SendMessage(BM_SETIMAGE, _type, hImg, this.hwnd)
         
@@ -165,24 +193,93 @@ class ToggleButton extends Gui.Checkbox {
 
 class Edit_Ext extends Gui.Edit {
     Static __New() {
-        super.Prototype._CueText := "" ; for easy get/read
+        super.Prototype._CurCueText := "" ; for easy get/read
         super.Prototype._CueOption := false
         For prop in this.Prototype.OwnProps()
             super.Prototype.%prop% := this.prototype.%prop%
-        super.Prototype.DefineProp("CueText",{Get:this.Prototype.CueText
-                                            , Set:this.Prototype.CueText})
+        
+        super.Prototype.DefineProp("CueText",{Get:this.Prototype._CueText,Set:this.Prototype._CueText})
+        
+        super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,"sel")}) ; this is also caret position
+        super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,"start")})
+        super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,"end")})
     }
+    
     Append(txt, top := false) {
         txtLen := SendMessage(0x000E, 0, 0,,this.hwnd)           ;WM_GETTEXTLENGTH
         pos := (!top) ? txtLen : 0
         SendMessage(0x00B1, pos, pos,,this.hwnd)           ;EM_SETSEL
         SendMessage(0x00C2, False, StrPtr(txt),,this.hwnd)    ;EM_REPLACESEL
     }
-    CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
+    
+    _CueText(p*) { ; thanks to AHK_user and iPhilip for this one: https://www.autohotkey.com/boards/viewtopic.php?p=426941#p426941
         If !p.Length
-            return this._CueText
+            return this._CurCueText
         Else If (p.Length = 2)
-            SendMessage(0x1501, (this._CueOption := (p[2]?p[2]:0)), StrPtr(this._CueText:=p[1]), this.hwnd)
+            SendMessage(0x1501, (this._CueOption := (p[2]?p[2]:0)), StrPtr(this._CurCueText:=p[1]), this.hwnd)
     }
-    SetCueText(txt,option:=false) => SendMessage(0x1501, this._CueOption:=option, StrPtr(this._CueText:=txt), this.hwnd)
+    
+    SetCueText(txt,option:=false) => SendMessage(0x1501, this._CueOption:=option, StrPtr(this._CurCueText:=txt), this.hwnd)
+    
+    SetSel(start:=0xFFFF,end:=0) {
+        SendMessage(0xB1, start, end, this.hwnd) ; EM_SETSEL
+    }
+    
+    _SelText(p*) {
+        dword := SendMessage(0xB0,0,0,this.hwnd) ; CB_GETSEL
+        range := [start := (dword & 0xFFFF), end := ((dword >> 16) & 0xFFFF)]
+        
+        result := ""
+        Switch p[1] {
+            Case "sel": result := SubStr(this.Text,range[1]+1,range[2]-range[1])
+               Default: result := (p[1]="start")?start:end
+        }
+        return result
+    }
+}
+
+; ==================================================================
+; Gui_Ext
+; ==================================================================
+
+class Gui_Ext extends Gui {
+    Static __New() {
+        Gui.Prototype := this.Prototype
+    }
+    Add(p*) {
+        ctl := super.Add(p*)
+        
+        If (p[1] = "ComboBox") {
+            ctl.temp_value := ""
+            ctl.OnEvent("change",AutoCompCb)
+            OnMessage(0x102,ComboChar) ; WM_CHAR
+        }
+        
+        return ctl
+        
+        AutoCompCb(ctl, info) {
+            If ctl.temp_value { ; temp_value
+                ctl.Text := ctl.temp_value
+                If (match := ctl.check_match()) {
+                    ctl.Text := match
+                    ctl.SetSel(StrLen(ctl.temp_value),0xFFFF)
+                }
+            }
+        }
+        
+        ComboChar(wParam, lParam, msg, hwnd) { ; WM_CHAR callback
+            ctl := GuiCtrlFromHwnd(hwnd)
+            If (ctl.Type = "ComboBox" && ctl.AutoComplete) {
+                start := SubStr(ctl.Text,1,ctl.SelStart)
+                end   := SubStr(ctl.Text,ctl.SelEnd+1)
+                sel   := ctl.SelText
+                
+                If (char := (wParam=8) ? "" : Chr(wParam)) {
+                    ctl.temp_value := (ctl.SelStart=0 && ctl.Text!=ctl.SelText) ? (sel char) : (start char end)
+                    ctl.temp_value := (!ctl.check_match(true)) ? "" : ctl.temp_value
+                } Else ctl.temp_value := ""
+            } ; dbg("temp_value: '" ctl.temp_value "' / do_select: " ctl.do_select " / selStart: " ctl.SelStart " / selEnd: " ctl.SelEnd)
+        }
+        
+    }
 }

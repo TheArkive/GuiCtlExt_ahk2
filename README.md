@@ -4,12 +4,24 @@ GuiControl extensions for AHK v2 controls
 ```
 Contributions:
 
-AHK_user:
-- ctl.SetCue() for Edit and ComboBox
+AHK_user
+iPhilip
+just me
+teadrinker
 
-just me:
+See comments in GuiCtlExt.ahk for details.
 
 ```
+
+## Latest Updates
+
++ added props/methods to Edit: SelText, SelStart, SelEnd, SetSel(), SetCueText()
++ added props/methods to Combo: SelText, SelStart, SelEnd, SetSel() check_match()
++ added prop to Combo: AutoComplete (true/false)
++ added an extension for Gui to facilitate AutoComplete for combo, and other fututre expansions
++ fixed credits & comments (if I miss one please let me know)
++ renamed a few internal properties/methods for these changes
++ updated README
 
 ## Picture Button
 
@@ -39,6 +51,8 @@ This method does not return a value.
 ### ctl.Type
 Returns `"PicButton"`.
 
+
+
 ## SplitButton
 
 ### Gui.AddSplitButton(sOptions:="",sText:="",callback:="")
@@ -61,6 +75,8 @@ Same as PicButton above.
 ### ctl.Type
 Returns `"SplitButton"`.
 
+
+
 ## ToggleButton
 
 ### Gui.AddToggleButton(sOptions:="",sText:="")
@@ -70,6 +86,8 @@ Returns `"SplitButton"`.
 
 ### ctl.SetImg(sFile, sOptions:="")
 Same as PicButton above.
+
+
 
 ## ListBox
 
@@ -81,6 +99,8 @@ Gets the text of the specified row.
 
 ### ctl.GetItems()
 Gets a linear array of all the items in the ListBox or ComboBox drop window.
+
+
 
 ## ComboBox
 
@@ -96,6 +116,17 @@ Gets a linear array of all the items in the ListBox or ComboBox drop window.
 ### ctl.CueText
 Sets/Gets cue text for the ComboBox control.
 
+### ctl.SelEnd
+Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelStart
+Gets the start pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelText
+Gets the selected text.
+
+
+
 ## ListView
 
 ### ctl.Checked(row)
@@ -106,6 +137,8 @@ Returns the icon index for the row.  Note that the default index for all rows, e
 
 ### ctl.GetColWidth(col)
 Returns the width of the specified column.
+
+
 
 ## Edit
 
@@ -119,3 +152,12 @@ If Option = false, then cue text will disappear on control focus (default).
 
 ### ctl.CueText
 Sets/Gets the cue text for the edit control.  The option described above in `.SetCueText()` is not changed.
+
+### ctl.SelEnd
+Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelStart
+Gets the start pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelText
+Gets the selected text.

@@ -20,8 +20,11 @@ ctl.Opt("+Report")
 ctl.ModifyCol()
 
 g.Add("ListBox","w100 h100 vLB",["ListBox Item 1","ListBox Item 2","ListBox Item 3"])
-ctl := g.Add("ComboBox","x+10 yp w100 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4"])
+ctl := g.Add("ComboBox","x+10 yp w150 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4","AutoC Test"])
 ctl.CueText := "Test Cue Text"
+ctl.AutoComplete := true
+ctl.Text := "abcdefg"
+ctl.SetSel(1,3) ; set selection
 
 btn := g.AddPicButton("vPicBtn w50 h24","netshell.dll","Icon151 w20 h20","Test") ; 24 x 24
 btn.OnEvent("click",gui_events)
@@ -39,7 +42,9 @@ btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different comb
 
 ctl := g.Add("Edit","xm w200 vMyEdit1")
 ctl.CueText[true] := "Test Cue Edit Text"
-; ctl.SetCueText("Test Cue Edit Text",true) ; set/change option of cue to persist on control focus (instead of disappear)
+; ctl.CueText("blah blah",1)
+ctl.Value := "abcdefg"
+ctl.SetCueText("Test Cue Edit Text",true) ; set/change option of cue to persist on control focus (instead of disappear)
                                           ; ctl.CueText also works with edit control
 
 g.show("h300 w300")
@@ -81,8 +86,7 @@ gui_events(ctl, info) {
              . "`tItemText Row " CBr ": " g["CB"].GetText(CBr) "`r`n"
              . "`tRow Count: " g["CB"].GetCount() "`r`n`r`n"
              . "`tItems:`r`n" CBi
-    }
-    Else If (ctl.name = "ToggleBtn") {
+    } Else If (ctl.name = "ToggleBtn") {
         Msgbox "Value: " ctl.Value
     }
 }
@@ -106,4 +110,19 @@ dbg(_in) { ; AHK v2
 F2::{
     Global g
     g["MyEdit1"].CueText := "Change the cue!"
+    g["MyEdit1"].SetSel(3,5)
 }
+F3::{
+    Global g
+    g["MyEdit1"].SetSel()
+}
+F4::{
+    Global g
+    g["MyEdit1"].SetSel(0,-1)
+}
+F5::{
+    Global g
+    ; dbg( g["CB"].CaretPos )
+    msgbox g["MyEdit1"].SelStart " / " g["MyEdit1"].SelEnd
+}
+
