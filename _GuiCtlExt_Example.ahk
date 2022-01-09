@@ -118,11 +118,11 @@ F3::{
 }
 F4::{
     Global g
-    g["MyEdit1"].SetSel(0,-1)
+    msgbox g["CB"].SelText
 }
 F5::{
     Global g
     ; dbg( g["CB"].CaretPos )
-    msgbox g["MyEdit1"].SelStart " / " g["MyEdit1"].SelEnd
+    g["CB"].SetSel(-1)
 }
 

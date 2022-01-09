@@ -2,12 +2,17 @@
 ; GuiControl_Ext
 ; ==================================================================
 
-class ListComboBox_Ext { ; apply stuff to ComboBox and ListBox
+class GuiCtl_Ext { ; apply common stuff to other gui controls
     Static __New() {
-        For prop in this.Prototype.OwnProps() {
-            Gui.ListBox.Prototype.%prop% := this.prototype.%prop%
-            Gui.ComboBox.Prototype.%prop% := this.prototype.%prop%
-        }
+        Gui.ListBox.Prototype.GetItems := this.prototype.GetItems
+        Gui.ListBox.Prototype._GetString := this.prototype._GetString
+        Gui.ComboBox.Prototype.GetItems := this.prototype.GetItems
+        Gui.ComboBox.Prototype._GetString := this.prototype._GetString
+        
+        Gui.Edit.Prototype._SetSel := this.prototype._SetSel
+        Gui.Edit.Prototype._SelText := this.prototype._SelText
+        Gui.ComboBox.Prototype._SetSel := this.prototype._SetSel
+        Gui.ComboBox.Prototype._SelText := this.prototype._SelText
     }
     
     GetItems() {
@@ -22,6 +27,28 @@ class ListComboBox_Ext { ; apply stuff to ComboBox and ListBox
         buf := Buffer( (size+1) * (StrLen(Chr(0xFFFF))?2:1), 0 )
         SendMessage(get_msg, row-1, buf.ptr, this.hwnd) ; GETTEXT
         return StrGet(buf)
+    }
+    
+    _SetSel(start,end) {
+        If (start="")
+            start := this.SelStart
+        If (end="")
+            (start=-1) ? (start := end := StrLen(this.Text)) : (start=0) ? (end := 0) : (end := start)
+        If !IsInteger(start) || !IsInteger(end)
+            throw Error("Invalid value.  Only integers are accepted.")
+        return [start,end]
+    }
+    
+    _SelText(p*) {
+        dword := SendMessage(p[1],0,0,this.hwnd) ; CB_GETEDITSEL
+        range := [start := (dword & 0xFFFF), end := ((dword >> 16) & 0xFFFF)]
+        
+        result := ""
+        Switch p[2] {
+            Case "sel": result := SubStr(this.Text,range[1]+1,range[2]-range[1])
+               Default: result := (p[2]="start")?start:end
+        }
+        return result
     }
 }
 
@@ -43,9 +70,9 @@ class ComboBox_Ext extends Gui.ComboBox {
             super.Prototype.%prop% := this.Prototype.%prop%
         super.Prototype.DefineProp("CueText",{Get:this.Prototype._CueText,Set:this.Prototype._CueText})
         
-        super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,"sel")})    ; 1st param is the instance, ...
-        super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,"start")}) ; ... so don't overwrite it.
-        super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,"end")})
+        super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,0x140,"sel")})    ; 1st param is the instance, ...
+        super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,0x140,"start")}) ; ... so don't overwrite it.
+        super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,0x140,"end")})
         
         super.Prototype.AutoComplete := false
     }
@@ -66,21 +93,10 @@ class ComboBox_Ext extends Gui.ComboBox {
     
     GetText(row) => this._GetString(0x149,0x148,row) ; 0x149 > CB_GETLBTEXTLEN // 0x148 > CB_GETLBTEXT
     
-    SetSel(start:=0xFFFF,end:=0) {
-        dword := (start | (end << 16))
+    SetSel(start:="",end:="") {
+        result := this._SetSel(start,end)
+        dword := (result[1] | (result[2] << 16))
         SendMessage(0x142, 0, dword, this.hwnd) ; CB_SETEDITSEL
-    }
-    
-    _SelText(p*) {
-        dword := SendMessage(0x140,0,0,this.hwnd) ; CB_GETEDITSEL
-        range := [start := (dword & 0xFFFF), end := ((dword >> 16) & 0xFFFF)]
-        
-        result := ""
-        Switch p[1] {
-            Case "sel": result := SubStr(this.Text,range[1]+1,range[2]-range[1])
-               Default: result := ((p[1]="start")?start:end)
-        }
-        return result
     }
 }
 
@@ -200,9 +216,9 @@ class Edit_Ext extends Gui.Edit {
         
         super.Prototype.DefineProp("CueText",{Get:this.Prototype._CueText,Set:this.Prototype._CueText})
         
-        super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,"sel")}) ; this is also caret position
-        super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,"start")})
-        super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,"end")})
+        super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,0xB0,"sel")}) ; this is also caret position
+        super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,0xB0,"start")})
+        super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,0xB0,"end")})
     }
     
     Append(txt, top := false) {
@@ -221,20 +237,9 @@ class Edit_Ext extends Gui.Edit {
     
     SetCueText(txt,option:=false) => SendMessage(0x1501, this._CueOption:=option, StrPtr(this._CurCueText:=txt), this.hwnd)
     
-    SetSel(start:=0xFFFF,end:=0) {
-        SendMessage(0xB1, start, end, this.hwnd) ; EM_SETSEL
-    }
-    
-    _SelText(p*) {
-        dword := SendMessage(0xB0,0,0,this.hwnd) ; CB_GETSEL
-        range := [start := (dword & 0xFFFF), end := ((dword >> 16) & 0xFFFF)]
-        
-        result := ""
-        Switch p[1] {
-            Case "sel": result := SubStr(this.Text,range[1]+1,range[2]-range[1])
-               Default: result := (p[1]="start")?start:end
-        }
-        return result
+    SetSel(start:="",end:="") {
+        result := this._SetSel(start,end)
+        SendMessage(0xB1, result[1], result[2], this.hwnd) ; EM_SETSEL
     }
 }
 
@@ -280,6 +285,5 @@ class Gui_Ext extends Gui {
                 } Else ctl.temp_value := ""
             } ; dbg("temp_value: '" ctl.temp_value "' / do_select: " ctl.do_select " / selStart: " ctl.SelStart " / selEnd: " ctl.SelEnd)
         }
-        
     }
 }

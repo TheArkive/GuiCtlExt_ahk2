@@ -13,6 +13,8 @@ See comments in GuiCtlExt.ahk for details.
 
 ```
 
+<br>
+
 ## Latest Updates
 
 + added props/methods to Edit: SelText, SelStart, SelEnd, SetSel(), SetCueText()
@@ -21,11 +23,14 @@ See comments in GuiCtlExt.ahk for details.
 + added an extension for Gui to facilitate AutoComplete for combo, and other fututre expansions
 + fixed credits & comments (if I miss one please let me know)
 + renamed a few internal properties/methods for these changes
++ changed behavior of .SetSel() for Edit and ComboBox
 + updated README
+
+<br>
 
 ## Picture Button
 
-### Gui.AddPicButton(sOptions:="", sPicFile:="", sPicFileOpt:="", Text:="")
+### Gui.AddPicButton(sOptions := "", sPicFile := "", sPicFileOpt := "", Text := "")
 
 `sOptions` are the normal options you would specify for any `Gui` control when invoking `Gui.Add()`.
 
@@ -33,7 +38,7 @@ The sPicFile and sPicFileOpt parameters are the same as the first 2 parameters o
 
 Text is optional.
 
-### ctl.SetImg(sFile, sOptions:="")
+### ctl.SetImg(sFile, sOptions := "")
 Sets or changes the image for a button.  Specify no text if you want an image button only.  Otherwise you will get the image and text.
 
 sOptions is the same as `LoadPicture()`.
@@ -51,11 +56,11 @@ This method does not return a value.
 ### ctl.Type
 Returns `"PicButton"`.
 
-
+<br> 
 
 ## SplitButton
 
-### Gui.AddSplitButton(sOptions:="",sText:="",callback:="")
+### Gui.AddSplitButton(sOptions := "", sText := "", callback := "")
 
 `sOptions` are the normal options you would specify for any `Gui` control when invoking `Gui.Add()`.
 
@@ -75,19 +80,18 @@ Same as PicButton above.
 ### ctl.Type
 Returns `"SplitButton"`.
 
-
+<br>
 
 ## ToggleButton
 
-### Gui.AddToggleButton(sOptions:="",sText:="")
+### Gui.AddToggleButton(sOptions := "", sText := "")
 `sOptions` are the normal options you would specify for any `Gui` control when invoking `Gui.Add()`.
 
 `sText` is the button text, if any.  You can also use .SetImg() to make this toggle button a pic button as well.
 
-### ctl.SetImg(sFile, sOptions:="")
-Same as PicButton above.
+### ctl.SetImg(sFile, sOptions := "")
 
-
+<br>
 
 ## ListBox
 
@@ -100,7 +104,7 @@ Gets the text of the specified row.
 ### ctl.GetItems()
 Gets a linear array of all the items in the ListBox or ComboBox drop window.
 
-
+<br>
 
 ## ComboBox
 
@@ -125,7 +129,22 @@ Gets the start pos of the current selection.  This property may act as the "curs
 ### ctl.SelText
 Gets the selected text.
 
+### ctl.SetSel(start := "", end := "")
+Sets the cursor position or selection, depending on usage.
 
+Note that both start and end are zero based.
+
+End can be larger than Start.
+
+|Value(s)|Result|
+|:--------:|------|
+|`0` |Sets cursor to beginning of text.|
+|`-1`|Sets cursor to end of text.|
+|`0, -1`|Select all text.|
+|`start, end`|Sets selection according to given values.|
+|*blank*|Removes selection, cursor is moved to selection start.|
+
+<br>
 
 ## ListView
 
@@ -138,7 +157,7 @@ Returns the icon index for the row.  Note that the default index for all rows, e
 ### ctl.GetColWidth(col)
 Returns the width of the specified column.
 
-
+<br>
 
 ## Edit
 
@@ -147,11 +166,21 @@ Appends text to the bottom of the edit control, unless `top := true`, then text 
 
 ### ctl.SetCueText(txt, Option := false)
 Sets cue text and option.
-If Option = true, then cue text will persist on control focus.
-If Option = false, then cue text will disappear on control focus (default).
+
+|Value|Result|
+|-----|------|
+|Option = true|Cue text will persist on control focus.|
+|Option = false|Cue text will disappear on control focus (default).|
 
 ### ctl.CueText
-Sets/Gets the cue text for the edit control.  The option described above in `.SetCueText()` is not changed.
+Sets/Gets the cue text for the edit control.  You can also set the `Option` described in `ctl.SetCueText()` above.
+```
+ctl.CueText := "new cue text"
+
+; This will set the cue text and set the Option to true.  The option can also be set to false.
+ctl.CueText[true] := "new cue text"
+```
+Keep in mind that you must specify either only the text, or the text and the option.  You can't only set the option.
 
 ### ctl.SelEnd
 Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
@@ -161,3 +190,18 @@ Gets the start pos of the current selection.  This property may act as the "curs
 
 ### ctl.SelText
 Gets the selected text.
+
+### ctl.SetSel(start := "", end := "")
+Sets the cursor position or selection, depending on usage.
+
+Note that both start and end are zero based.
+
+End can be larger than Start.
+
+|:Value(s):|Result|
+|:--------:|------|
+|`0` |Sets cursor to beginning of text.|
+|`-1`|Sets cursor to end of text.|
+|`0, -1`|Select all text.|
+|`start, end`|Sets selection according to given values.|
+|*blank*|Removes selection, cursor is moved to selection start.|
