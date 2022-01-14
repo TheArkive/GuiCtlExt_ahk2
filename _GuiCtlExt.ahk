@@ -85,8 +85,10 @@ class ComboBox_Ext extends Gui.ComboBox {
     
     check_match(t:=false) {
         For i, val in this.GetItems()
-            If (RegExMatch(val,"i)^\Q" (t?this.temp_value:this.Text) "\E") && (t?this.temp_value:this.Text))
+            If (InStr(val,(t?this.temp_value:this.Text))=1 && (t?this.temp_value:this.Text))
                 return val
+            ; If (RegExMatch(val,"i)^\Q" (t?this.temp_value:this.Text) "\E") && (t?this.temp_value:this.Text))
+                ; return val
     }
     
     GetCount() => SendMessage(0x146, 0, 0, this.hwnd)  ; CB_GETCOUNT
