@@ -4,6 +4,8 @@
 
 class GuiCtl_Ext { ; apply common stuff to other gui controls
     Static __New() {
+        Gui.GuiControl.Destroy := this.Prototype.Destroy
+        
         Gui.ListBox.Prototype.GetItems := this.prototype.GetItems
         Gui.ListBox.Prototype._GetString := this.prototype._GetString
         Gui.ComboBox.Prototype.GetItems := this.prototype.GetItems
@@ -13,6 +15,10 @@ class GuiCtl_Ext { ; apply common stuff to other gui controls
         Gui.Edit.Prototype._SelText := this.prototype._SelText
         Gui.ComboBox.Prototype._SetSel := this.prototype._SetSel
         Gui.ComboBox.Prototype._SelText := this.prototype._SelText
+    }
+    
+    Destroy() {
+        DllCall("DestroyWindow", "UInt", this.hwnd)
     }
     
     GetItems() {
