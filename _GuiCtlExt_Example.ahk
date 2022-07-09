@@ -1,6 +1,6 @@
 ; AHK v2
 #INCLUDE _GuiCtlExt.ahk
-#Include _JXON.ahk
+; #Include _JXON.ahk
 
 Global g
 
@@ -40,10 +40,11 @@ btn := g.AddToggleButton("vToggleBtn w80 h32","Test")   ; Icons+Text on a Toggle
 btn.OnEvent("click",gui_events)                         ; Remove button text to get a ToggleButton with an icon.
 btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
-ctl := g.Add("Edit","xm w200 vMyEdit1")
+ctl := g.Add("Edit","xm w200 h40 vMyEdit1 +HScroll400 -Wrap")
 ctl.CueText[true] := "Test Cue Edit Text"
+; msgbox ctl.Length
 ; ctl.CueText("blah blah",1)
-ctl.Value := "abcdefg"
+ctl.Value := "abcdefg aaaaa aaaaaa aaaaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaaaaa aaaaaaa"
 ctl.SetCueText("Test Cue Edit Text",true) ; set/change option of cue to persist on control focus (instead of disappear)
                                           ; ctl.CueText also works with edit control
 
@@ -123,6 +124,8 @@ F4::{
 F5::{
     Global g
     ; dbg( g["CB"].CaretPos )
-    g["CB"].SetSel(-1)
+    ; g["CB"].SetSel(-1)
+    g["MyEdit1"].SetScroll(20,"h")
+    g["MyEdit1"].Redraw()
 }
 
