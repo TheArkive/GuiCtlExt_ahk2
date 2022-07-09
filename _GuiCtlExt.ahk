@@ -245,6 +245,16 @@ class Edit_Ext extends Gui.Edit {
     }
 }
 
+class Edit_Control extends Gui.Control {
+    Static __New() {
+        For prop in this.Prototype.OwnProps()
+            super.Prototype.%prop% := this.prototype.%prop%
+    }
+    Destroy() {
+        DllCall("DestroyWindow", "UInt", this.hwnd)
+    }
+}
+
 ; ==================================================================
 ; Gui_Ext
 ; ==================================================================
