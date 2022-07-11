@@ -4,7 +4,7 @@
 
 class GuiCtl_Ext { ; apply common stuff to other gui controls
     Static __New() {
-        Gui.GuiControl.Destroy := this.Prototype.Destroy
+        Gui.GuiControl.Prototype.Destroy := this.Prototype.Destroy
         
         Gui.ListBox.Prototype.GetItems := this.prototype.GetItems
         Gui.ListBox.Prototype._GetString := this.prototype._GetString
