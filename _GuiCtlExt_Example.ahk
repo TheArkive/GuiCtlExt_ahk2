@@ -2,8 +2,6 @@
 #INCLUDE _GuiCtlExt.ahk
 ; #Include _JXON.ahk
 
-; git test
-
 Global g
 
 IL := IL_Create(2)
