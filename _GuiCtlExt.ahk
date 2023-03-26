@@ -284,5 +284,11 @@ class Gui_Ext extends Gui {
             } ; dbg("temp_value: '" ctl.temp_value "' / do_select: " ctl.do_select " / selStart: " ctl.SelStart " / selEnd: " ctl.SelEnd)
         }
     }
+    
+    ; Set the Icon for the Gui
+    SetIcon(FileName := "Shell32.dll", IconNumber:=1) {
+		SendMessage(0x0080, 0, LoadPicture(FileName, "Icon" IconNumber " w" 32 " h" 32, &imgtype), this.hwnd)  ; 0x0080 is WM_SETICON; and 1 means ICON_BIG (vs. 0 for ICON_SMALL).
+    }
+
     Type => "Gui"
 }
