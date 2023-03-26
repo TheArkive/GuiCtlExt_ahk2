@@ -1,4 +1,16 @@
 ; ==================================================================
+; **** WARNING *** WARNING *** WARNING *** WARNING *** WARNING ****
+;
+; This script adds modifications to original built-in GUI and
+; GuiControl-related objects.  If you combine this script with
+; another script that does the same thing, you will likely get
+; unpredictable results.  Especially in the case of methods /
+; properties being mistakenly overwritten, no error messages will be
+; generated.
+;
+; It is not recommended to use this script in combination with other
+; scripts that also modify the Gui and GuiControl objects.
+; ==================================================================
 ; GuiControl_Ext
 ; ==================================================================
 
