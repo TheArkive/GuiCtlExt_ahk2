@@ -72,6 +72,8 @@ gui_events(ctl, info) {
         For item in g["CB"].GetItems()
             CBi .= (CBi?"`r`n`t":"`t") item 
         
+        
+        
         MsgBox "ListView`r`n`r`n"
              . "`tIconIndex Row " LVr ": " g["LV"].IconIndex(LVr) "`r`n"
              . "`tChecked Row " LVr ": " (g["LV"].Checked(LVr)?"true":"false") "`r`n"
