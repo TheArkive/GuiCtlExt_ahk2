@@ -4,8 +4,6 @@
 
 class GuiCtl_Ext { ; apply common stuff to other gui controls
     Static __New() {
-        Gui.Control.Prototype.Destroy := this.Prototype.Destroy
-        
         Gui.ListBox.Prototype.GetItems := this.prototype.GetItems
         Gui.ListBox.Prototype._GetString := this.prototype._GetString
         Gui.ComboBox.Prototype.GetItems := this.prototype.GetItems
@@ -16,8 +14,6 @@ class GuiCtl_Ext { ; apply common stuff to other gui controls
         Gui.ComboBox.Prototype._SetSel := this.prototype._SetSel
         Gui.ComboBox.Prototype._SelText := this.prototype._SelText
     }
-    
-    Destroy() => DllCall("DestroyWindow", "UInt", this.hwnd)
     
     GetItems() {
         result := []
@@ -58,11 +54,11 @@ class GuiCtl_Ext { ; apply common stuff to other gui controls
 
 class ListBox_Ext extends Gui.ListBox {
     Static __New() {
-        For prop in this.Prototype.OwnProps()
-            super.Prototype.%prop% := this.Prototype.%prop%
+        For p in this.Prototype.OwnProps()
+            (SubStr(p,1,2)!="__") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
     }
     
-    GetCount() => SendMessage(0x018B, 0, 0, this.hwnd) ; LB_GETCOUNT
+    GetCount() => (SendMessage(0x018B, 0, 0, this.hwnd)) ; LB_GETCOUNT
     
     GetText(row) => this._GetString(0x18A,0x189,row) ; 0x18A > LB_GETTEXTLEN // 0x189 > LB_GETTEXT
 }
@@ -70,8 +66,9 @@ class ListBox_Ext extends Gui.ListBox {
 class ComboBox_Ext extends Gui.ComboBox {
     Static __New() {
         super.Prototype._CurCueText := ""
-        For prop in this.Prototype.OwnProps() 
-            super.Prototype.%prop% := this.Prototype.%prop%
+        For p in this.Prototype.OwnProps() 
+            (SubStr(p,1,2)!="__") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
+        
         super.Prototype.DefineProp("CueText",{Get:this.Prototype._CueText,Set:this.Prototype._CueText})
         
         super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,0x140,"sel")})    ; 1st param is the instance, ...
@@ -108,8 +105,8 @@ class ComboBox_Ext extends Gui.ComboBox {
 
 class ListView_Ext extends Gui.ListView { ; Technically no need to extend classes unless
     Static __New() { ; you are attaching new base on control creation.
-        For prop in this.Prototype.OwnProps()
-            super.Prototype.%prop% := this.Prototype.%prop%
+        For p in this.Prototype.OwnProps()
+            (SubStr(p,1,2)!="__") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
     }
     
     ; This was taken directly from the AutoHotkey help files.
@@ -128,8 +125,8 @@ class ListView_Ext extends Gui.ListView { ; Technically no need to extend classe
 
 class StatusBar_Ext extends Gui.StatusBar {
     Static __New() {
-        For prop in this.Prototype.OwnProps()
-            super.Prototype.%prop% := this.Prototype.%prop%
+        For p in this.Prototype.OwnProps()
+            (SubStr(p,1,2)!="__") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
     }
     RemoveIcon(part:=1) {
         hIcon := SendMessage(0x414, part-1, 0, this.hwnd)
@@ -163,9 +160,7 @@ class PicButton extends Gui.Button {
         
         ImgType := _type ; store current img type for next call/release
     }
-    Type {
-        get => "PicButton"
-    }
+    Type => "PicButton"
 }
 
 class SplitButton extends Gui.Button {
@@ -193,9 +188,7 @@ class SplitButton extends Gui.Button {
         ctl.GetPos(&x,&y,,&h)
         f := this.callback, f(ctl,{x:x, y:y+h})
     }
-    Type {
-        get => "SplitButton"
-    }
+    Type => "SplitButton"
 }
 
 class ToggleButton extends Gui.Checkbox {
@@ -208,23 +201,22 @@ class ToggleButton extends Gui.Checkbox {
         ctl.base := ToggleButton.Prototype
         return ctl
     }
-    Type {
-        get => "ToggleButton"
-    }
+    Type => "ToggleButton"
 }
 
 class Edit_Ext extends Gui.Edit {
     Static __New() {
         super.Prototype._CurCueText := "" ; for easy get/read
         super.Prototype._CueOption := false
-        For prop in this.Prototype.OwnProps()
-            super.Prototype.%prop% := this.prototype.%prop%
+        For p in this.Prototype.OwnProps()
+            (SubStr(p,1,2)!="__") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
         
         super.Prototype.DefineProp("CueText",{Get:this.Prototype._CueText,Set:this.Prototype._CueText})
         
         super.Prototype.DefineProp("SelText",{Get:this.Prototype._SelText.Bind(,0xB0,"sel")}) ; this is also caret position
         super.Prototype.DefineProp("SelStart",{Get:this.Prototype._SelText.Bind(,0xB0,"start")})
         super.Prototype.DefineProp("SelEnd",{Get:this.Prototype._SelText.Bind(,0xB0,"end")})
+        ; super.Prototype.DefineProp("Length",{Get:(*)=>StrLen(this.Prototype.Value)})
     }
     
     Append(txt, top := false) {
@@ -292,4 +284,5 @@ class Gui_Ext extends Gui {
             } ; dbg("temp_value: '" ctl.temp_value "' / do_select: " ctl.do_select " / selStart: " ctl.SelStart " / selEnd: " ctl.SelEnd)
         }
     }
+    Type => "Gui"
 }
