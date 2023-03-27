@@ -4,7 +4,7 @@
 
 Global g
 
-IL := IL_Create(2)
+IL := IL_Create(2) ; image lists for, ListView, Tabs
 IL_Add(IL, "shell32.dll", 128)
 IL_Add(IL, "shell32.dll", 129)
 IL_Add(IL, "shell32.dll", 256)
@@ -41,7 +41,7 @@ btn.SetImg("netshell.dll","Icon151 w20 h20")
 
 btn := g.AddToggleButton("vToggleBtn w80 h32","Test")   ; Icons+Text on a ToggleButton don't seem to work with native AHK gui.
 btn.OnEvent("click",gui_events)                         ; Remove button text to get a ToggleButton with an icon.
-btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
+; btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
 ctl := g.Add("Edit","xm w200 r1 vMyEdit1 -Wrap")
 ; to set cue text do this ...

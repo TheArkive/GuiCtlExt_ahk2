@@ -15,6 +15,11 @@ See comments in GuiCtlExt.ahk for details.
 
 <br>
 
+### *** WARNING *** WARNING *** WARNING ***
+This script modifies the built-in Gui and several GuiControl objects.  Using this script in combination with other scripts that do the same is not recommended.  If methods / properties are unintentionally overwritten, there will be no error message or notification of any kind.
+
+<br>
+
 ## Gui
 
 ### gui_obj.SetIcon(FileName := "Shell32.dll", Icon:=1)
@@ -230,8 +235,6 @@ Sets or removes the name/text for the specified tab.  Specify `""` for the 2nd p
 `sOptions` are the normal options you would specify for any `Gui` control when invoking `Gui.Add()`.
 
 `sText` is the button text, if any.  You can also use .SetImg() to make this toggle button a pic button as well.
-
-### ctl.SetImg(sFile, sOptions := "")
 
 <br>
 

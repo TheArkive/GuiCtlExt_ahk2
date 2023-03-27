@@ -224,7 +224,7 @@ summary { margin-bottom: 16px; }
 </style></head>
 
 <body><div id="body-container"><div id="main">
-<h1 id="guictlext_ahk2" >GuiCtlExt_ahk2<a href="#guictlext_ahk2"><span class="link">•</span></a></h1>
+<h1 id="guictlext_ahk2"  class="underline">GuiCtlExt_ahk2<a href="#guictlext_ahk2"><span class="link">•</span></a></h1>
 <p>GuiControl extensions for AHK v2 controls</p>
 <pre><code>Contributions:
 
@@ -236,62 +236,14 @@ teadrinker
 See comments in GuiCtlExt.ahk for details.
 </code></pre>
 <p><br></p>
-<h2 id="latest-updates" >Latest Updates<a href="#latest-updates"><span class="link">•</span></a></h2>
-<ul>
-<li>added props/methods to Edit: SelText, SelStart, SelEnd, SetSel(), SetCueText()</li>
-<li>added props/methods to Combo: SelText, SelStart, SelEnd, SetSel() check_match()</li>
-<li>added prop to Combo: AutoComplete (true/false)</li>
-<li>added an extension for Gui to facilitate AutoComplete for combo, and other fututre expansions</li>
-<li>fixed credits & comments (if I miss one please let me know)</li>
-<li>renamed a few internal properties/methods for these changes</li>
-<li>changed behavior of .SetSel() for Edit and ComboBox</li>
-<li>updated README</li></ul>
-
+<h3 id="***-warning-***-warning-***-warning-***" ><em><strong> WARNING </strong></em> WARNING <em><strong> WARNING </strong></em><a href="#***-warning-***-warning-***-warning-***"><span class="link">•</span></a></h3>
+<p>This script modifies the built-in Gui and several GuiControl objects.  Using this script in combination with other scripts that do the same is not recommended.  If methods / properties are unintentionally overwritten, there will be no error message or notification of any kind.</p>
 <p><br></p>
-<h2 id="picture-button" >Picture Button<a href="#picture-button"><span class="link">•</span></a></h2>
-<h3 id="gui-addpicbuttonsoptions-:=-"",-spicfile-:=-"",-spicfileopt-:=-"",-text-:=-""" >Gui.AddPicButton(sOptions := "", sPicFile := "", sPicFileOpt := "", Text := "")<a href="#gui-addpicbuttonsoptions-:=-"",-spicfile-:=-"",-spicfileopt-:=-"",-text-:=-"""><span class="link">•</span></a></h3>
-<p><code>sOptions</code> are the normal options you would specify for any <code>Gui</code> control when invoking <code>Gui.Add()</code>.</p>
-<p>The sPicFile and sPicFileOpt parameters are the same as the first 2 parameters of LoadPicture().  For more info, see <code>ctl.SetImg()</code> below, or the AHK help files for LoadPicture().</p>
-<p>Text is optional.</p>
-<h3 id="ctl-setimgsfile,-soptions-:=-""" >ctl.SetImg(sFile, sOptions := "")<a href="#ctl-setimgsfile,-soptions-:=-"""><span class="link">•</span></a></h3>
-<p>Sets or changes the image for a button.  Specify no text if you want an image button only.  Otherwise you will get the image and text.</p>
-<p>sOptions is the same as <code>LoadPicture()</code>.</p>
-<p>Example:  <code>Icon5 w32 h-1</code></p>
-<p>NOTE:  Specify <code>*w32 *h-1</code> to use filtering when scaling an image.</p>
-<p>The type of image loaded is always auto-detected.</p>
-<p>If you change a Button Pic image, then the previous image handle is automatically destroyed.</p>
-<p>This method does not return a value.</p>
-<h3 id="ctl-type" >ctl.Type<a href="#ctl-type"><span class="link">•</span></a></h3>
-<p>Returns <code>"PicButton"</code>.</p>
-<p><br> </p>
-<h2 id="splitbutton" >SplitButton<a href="#splitbutton"><span class="link">•</span></a></h2>
-<h3 id="gui-addsplitbuttonsoptions-:=-"",-stext-:=-"",-callback-:=-""" >Gui.AddSplitButton(sOptions := "", sText := "", callback := "")<a href="#gui-addsplitbuttonsoptions-:=-"",-stext-:=-"",-callback-:=-"""><span class="link">•</span></a></h3>
-<p><code>sOptions</code> are the normal options you would specify for any <code>Gui</code> control when invoking <code>Gui.Add()</code>.</p>
-<p>Callback format:</p>
-<pre><code>callback(ctl, coords) {
-    msgbox ctl.name "`r`n" coords.x " / " coords.y
-}</code></pre>
-<p>The <code>coords</code> parameter is an <code>{object}</code> with properties X and Y.  The X/Y is the client coords needed to properly position a menu for the split button.</p>
-<h3 id="ctl-setimgsfile,-soptions:=""" >ctl.SetImg(sFile, sOptions:="")<a href="#ctl-setimgsfile,-soptions:="""><span class="link">•</span></a></h3>
-<p>Same as PicButton above.</p>
-<h3 id="ctl-type" >ctl.Type<a href="#ctl-type"><span class="link">•</span></a></h3>
-<p>Returns <code>"SplitButton"</code>.</p>
+<h2 id="gui"  class="underline">Gui<a href="#gui"><span class="link">•</span></a></h2>
+<h3 id="gui_obj-seticonfilename-:=-"shell32-dll",-icon:=1" >gui_obj.SetIcon(FileName := "Shell32.dll", Icon:=1)<a href="#gui_obj-seticonfilename-:=-"shell32-dll",-icon:=1"><span class="link">•</span></a></h3>
+<p>Sets the icon for the dialog.</p>
 <p><br></p>
-<h2 id="togglebutton" >ToggleButton<a href="#togglebutton"><span class="link">•</span></a></h2>
-<h3 id="gui-addtogglebuttonsoptions-:=-"",-stext-:=-""" >Gui.AddToggleButton(sOptions := "", sText := "")<a href="#gui-addtogglebuttonsoptions-:=-"",-stext-:=-"""><span class="link">•</span></a></h3>
-<p><code>sOptions</code> are the normal options you would specify for any <code>Gui</code> control when invoking <code>Gui.Add()</code>.</p>
-<p><code>sText</code> is the button text, if any.  You can also use .SetImg() to make this toggle button a pic button as well.</p>
-<h3 id="ctl-setimgsfile,-soptions-:=-""" >ctl.SetImg(sFile, sOptions := "")<a href="#ctl-setimgsfile,-soptions-:=-"""><span class="link">•</span></a></h3>
-<p><br></p>
-<h2 id="listbox" >ListBox<a href="#listbox"><span class="link">•</span></a></h2>
-<h3 id="ctl-getcount" >ctl.GetCount()<a href="#ctl-getcount"><span class="link">•</span></a></h3>
-<p>Returns number of items in Listbox or ComboBox drop window.</p>
-<h3 id="ctl-gettextrow" >ctl.GetText(row)<a href="#ctl-gettextrow"><span class="link">•</span></a></h3>
-<p>Gets the text of the specified row.</p>
-<h3 id="ctl-getitems" >ctl.GetItems()<a href="#ctl-getitems"><span class="link">•</span></a></h3>
-<p>Gets a linear array of all the items in the ListBox or ComboBox drop window.</p>
-<p><br></p>
-<h2 id="combobox" >ComboBox<a href="#combobox"><span class="link">•</span></a></h2>
+<h2 id="combobox"  class="underline">ComboBox<a href="#combobox"><span class="link">•</span></a></h2>
 <h3 id="ctl-getcount" >ctl.GetCount()<a href="#ctl-getcount"><span class="link">•</span></a></h3>
 <p>Returns number of items in Listbox or ComboBox drop window.</p>
 <h3 id="ctl-gettextrow" >ctl.GetText(row)<a href="#ctl-gettextrow"><span class="link">•</span></a></h3>
@@ -312,15 +264,7 @@ See comments in GuiCtlExt.ahk for details.
 <p>End can be larger than Start.</p>
 <table class="normal"><tr></tr><tr><th align="center">Value(s)</th><th align="left">Result</th></tr><tr><td align="center"><code>0</code></td><td align="left">Sets cursor to beginning of text.</td></tr><tr><td align="center"><code>-1</code></td><td align="left">Sets cursor to end of text.</td></tr><tr><td align="center"><code>0, -1</code></td><td align="left">Select all text.</td></tr><tr><td align="center"><code>start, end</code></td><td align="left">Sets selection according to given values.</td></tr><tr><td align="center"><em>blank</em></td><td align="left">Removes selection, cursor is moved to selection start.</td></tr></table>
 <p><br></p>
-<h2 id="listview" >ListView<a href="#listview"><span class="link">•</span></a></h2>
-<h3 id="ctl-checkedrow" >ctl.Checked(row)<a href="#ctl-checkedrow"><span class="link">•</span></a></h3>
-<p>Returns true if checked, false if not, for specified row.</p>
-<h3 id="ctl-iconindexrow" >ctl.IconIndex(row)<a href="#ctl-iconindexrow"><span class="link">•</span></a></h3>
-<p>Returns the icon index for the row.  Note that the default index for all rows, even without an icon is 1.</p>
-<h3 id="ctl-getcolwidthcol" >ctl.GetColWidth(col)<a href="#ctl-getcolwidthcol"><span class="link">•</span></a></h3>
-<p>Returns the width of the specified column.</p>
-<p><br></p>
-<h2 id="edit" >Edit<a href="#edit"><span class="link">•</span></a></h2>
+<h2 id="edit"  class="underline">Edit<a href="#edit"><span class="link">•</span></a></h2>
 <h3 id="ctl-appendtext,-top-:=-false" >ctl.Append(text, top := false)<a href="#ctl-appendtext,-top-:=-false"><span class="link">•</span></a></h3>
 <p>Appends text to the bottom of the edit control, unless <code>top := true</code>, then text is prepended.</p>
 <h3 id="ctl-setcuetexttxt,-option-:=-false" >ctl.SetCueText(txt, Option := false)<a href="#ctl-setcuetexttxt,-option-:=-false"><span class="link">•</span></a></h3>
@@ -343,4 +287,76 @@ ctl.CueText[true] := "new cue text"</code></pre>
 <p>Sets the cursor position or selection, depending on usage.</p>
 <p>Note that both start and end are zero based.</p>
 <p>End can be larger than Start.</p>
-<table class="normal"><tr></tr><tr><th align="center">Value(s)</th><th align="left">Result</th></tr><tr><td align="center"><code>0</code></td><td align="left">Sets cursor to beginning of text.</td></tr><tr><td align="center"><code>-1</code></td><td align="left">Sets cursor to end of text.</td></tr><tr><td align="center"><code>0, -1</code></td><td align="left">Select all text.</td></tr><tr><td align="center"><code>start, end</code></td><td align="left">Sets selection according to given values.</td></tr><tr><td align="center"><em>blank</em></td><td align="left">Removes selection, cursor is moved to selection start.</td></tr></table></div></div></body></html>
+<table class="normal"><tr></tr><tr><th align="center">Value(s)</th><th align="left">Result</th></tr><tr><td align="center"><code>0</code></td><td align="left">Sets cursor to beginning of text.</td></tr><tr><td align="center"><code>-1</code></td><td align="left">Sets cursor to end of text.</td></tr><tr><td align="center"><code>0, -1</code></td><td align="left">Select all text.</td></tr><tr><td align="center"><code>start, end</code></td><td align="left">Sets selection according to given values.</td></tr><tr><td align="center"><em>blank</em></td><td align="left">Removes selection, cursor is moved to selection start.</td></tr></table>
+<p><br></p>
+<h2 id="listbox"  class="underline">ListBox<a href="#listbox"><span class="link">•</span></a></h2>
+<h3 id="ctl-getcount" >ctl.GetCount()<a href="#ctl-getcount"><span class="link">•</span></a></h3>
+<p>Returns number of items in Listbox or ComboBox drop window.</p>
+<h3 id="ctl-gettextrow" >ctl.GetText(row)<a href="#ctl-gettextrow"><span class="link">•</span></a></h3>
+<p>Gets the text of the specified row.</p>
+<h3 id="ctl-getitems" >ctl.GetItems()<a href="#ctl-getitems"><span class="link">•</span></a></h3>
+<p>Gets a linear array of all the items in the ListBox or ComboBox drop window.</p>
+<p><br></p>
+<h2 id="listview"  class="underline">ListView<a href="#listview"><span class="link">•</span></a></h2>
+<h3 id="ctl-checkedrow" >ctl.Checked(row)<a href="#ctl-checkedrow"><span class="link">•</span></a></h3>
+<p>Returns true if checked, false if not, for specified row.</p>
+<h3 id="ctl-iconindexrow" >ctl.IconIndex(row)<a href="#ctl-iconindexrow"><span class="link">•</span></a></h3>
+<p>Returns the icon index for the row.  Note that the default index for all rows, even without an icon is 1.</p>
+<h3 id="ctl-getcolwidthcol" >ctl.GetColWidth(col)<a href="#ctl-getcolwidthcol"><span class="link">•</span></a></h3>
+<p>Returns the width of the specified column.</p>
+<p><br></p>
+<h2 id="picture-button"  class="underline">Picture Button<a href="#picture-button"><span class="link">•</span></a></h2>
+<h3 id="gui-addpicbuttonsoptions-:=-"",-spicfile-:=-"",-spicfileopt-:=-"",-text-:=-""" >Gui.AddPicButton(sOptions := "", sPicFile := "", sPicFileOpt := "", Text := "")<a href="#gui-addpicbuttonsoptions-:=-"",-spicfile-:=-"",-spicfileopt-:=-"",-text-:=-"""><span class="link">•</span></a></h3>
+<p><code>sOptions</code> are the normal options you would specify for any <code>Gui</code> control when invoking <code>Gui.Add()</code>.</p>
+<p>The sPicFile and sPicFileOpt parameters are the same as the first 2 parameters of LoadPicture().  For more info, see <code>ctl.SetImg()</code> below, or the AHK help files for LoadPicture().</p>
+<p>Text is optional.</p>
+<h3 id="ctl-setimgsfile,-soptions-:=-""" >ctl.SetImg(sFile, sOptions := "")<a href="#ctl-setimgsfile,-soptions-:=-"""><span class="link">•</span></a></h3>
+<p>Sets or changes the image for a button.  Specify no text if you want an image button only.  Otherwise you will get the image and text.</p>
+<p>sOptions is the same as <code>LoadPicture()</code>.</p>
+<p>Example:  <code>Icon5 w32 h-1</code></p>
+<p>NOTE:  Specify <code>*w32 *h-1</code> to use filtering when scaling an image.</p>
+<p>The type of image loaded is always auto-detected.</p>
+<p>If you change a Button Pic image, then the previous image handle is automatically destroyed.</p>
+<p>This method does not return a value.</p>
+<h3 id="ctl-type" >ctl.Type<a href="#ctl-type"><span class="link">•</span></a></h3>
+<p>Returns <code>"PicButton"</code>.</p>
+<p><br> </p>
+<h2 id="splitbutton"  class="underline">SplitButton<a href="#splitbutton"><span class="link">•</span></a></h2>
+<h3 id="gui-addsplitbuttonsoptions-:=-"",-stext-:=-"",-callback-:=-""" >Gui.AddSplitButton(sOptions := "", sText := "", callback := "")<a href="#gui-addsplitbuttonsoptions-:=-"",-stext-:=-"",-callback-:=-"""><span class="link">•</span></a></h3>
+<p><code>sOptions</code> are the normal options you would specify for any <code>Gui</code> control when invoking <code>Gui.Add()</code>.</p>
+<p>Callback format:</p>
+<pre><code>callback(ctl, coords) {
+    msgbox ctl.name "`r`n" coords.x " / " coords.y
+}</code></pre>
+<p>The <code>coords</code> parameter is an <code>{object}</code> with properties X and Y.  The X/Y is the client coords needed to properly position a menu for the split button.</p>
+<h3 id="ctl-setimgsfile,-soptions:=""" >ctl.SetImg(sFile, sOptions:="")<a href="#ctl-setimgsfile,-soptions:="""><span class="link">•</span></a></h3>
+<p>Same as PicButton above.</p>
+<h3 id="ctl-type" >ctl.Type<a href="#ctl-type"><span class="link">•</span></a></h3>
+<p>Returns <code>"SplitButton"</code>.</p>
+<p><br></p>
+<h2 id="tab"  class="underline">Tab<a href="#tab"><span class="link">•</span></a></h2>
+<h3 id="ctl-getcount" >ctl.GetCount()<a href="#ctl-getcount"><span class="link">•</span></a></h3>
+<p>Returns the number of tabs.</p>
+<h3 id="ctl-geticontab_num" >ctl.GetIcon(tab_num)<a href="#ctl-geticontab_num"><span class="link">•</span></a></h3>
+<p>Returns the index of the icon for the specified tab, or 0 if no icon.</p>
+<h3 id="ctl-getitems" >ctl.GetItems()<a href="#ctl-getitems"><span class="link">•</span></a></h3>
+<p>Returns an array of tab names.</p>
+<h3 id="ctl-getnametab_num" >ctl.GetName(tab_num)<a href="#ctl-getnametab_num"><span class="link">•</span></a></h3>
+<p>Returns the name/text for the specified tab.</p>
+<h3 id="ctl-insertpos,-name:="",-icon:=""" >ctl.Insert(pos, name:="", icon:="")<a href="#ctl-insertpos,-name:="",-icon:="""><span class="link">•</span></a></h3>
+<p>Inserts a tab at specified position.  Name/Text and Icon are optional.  The tab originally in <code>pos</code> is moved to the right, along with all other tabs to the rigth of <code>pos</code>.</p>
+<h3 id="ctl-rowcount" >ctl.RowCount<a href="#ctl-rowcount"><span class="link">•</span></a></h3>
+<p>Returns the current number of tab rows.</p>
+<h3 id="ctl-seticontab_num,icon:=0" >ctl.SetIcon(tab_num,icon:=0)<a href="#ctl-seticontab_num,icon:=0"><span class="link">•</span></a></h3>
+<p>Sets or removes the icon for the specified tab.  Specify <code>0</code> for the 2nd parameter, or omit it to remove the specified tab icon.</p>
+<h3 id="ctl-setimagelisthlist" >ctl.SetImageList(hList)<a href="#ctl-setimagelisthlist"><span class="link">•</span></a></h3>
+<p>Sets the specified image list created with <code>IL_Create()</code> so that icons can be added to tabs.</p>
+<h3 id="ctl-setnametab_num,name:=""" >ctl.SetName(tab_num,name:="")<a href="#ctl-setnametab_num,name:="""><span class="link">•</span></a></h3>
+<p>Sets or removes the name/text for the specified tab.  Specify <code>""</code> for the 2nd parameter, or omit it to remove the specified tab name/text.</p>
+<p><br></p>
+<h2 id="togglebutton"  class="underline">ToggleButton<a href="#togglebutton"><span class="link">•</span></a></h2>
+<h3 id="gui-addtogglebuttonsoptions-:=-"",-stext-:=-""" >Gui.AddToggleButton(sOptions := "", sText := "")<a href="#gui-addtogglebuttonsoptions-:=-"",-stext-:=-"""><span class="link">•</span></a></h3>
+<p><code>sOptions</code> are the normal options you would specify for any <code>Gui</code> control when invoking <code>Gui.Add()</code>.</p>
+<p><code>sText</code> is the button text, if any.  You can also use .SetImg() to make this toggle button a pic button as well.</p>
+<h3 id="ctl-setimgsfile,-soptions-:=-""" >ctl.SetImg(sFile, sOptions := "")<a href="#ctl-setimgsfile,-soptions-:=-"""><span class="link">•</span></a></h3>
+<p><br></p></div></div></body></html>

@@ -363,7 +363,8 @@ class Tab_Ext extends Gui.Tab {
 
 class ToggleButton extends Gui.Checkbox {
     Static __New() {
-        super.Prototype.SetImg := PicButton.Prototype.SetImg
+        For p in this.Prototype.OwnProps()
+            (p!="__Class") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
         Gui.Prototype.AddToggleButton := this.AddToggleButton
     }
     
@@ -372,6 +373,22 @@ class ToggleButton extends Gui.Checkbox {
         ctl.base := ToggleButton.Prototype
         return ctl
     }
+    
+    ; This doesn't seem to work with ToggleButton ... 
+    ; SetImg(sFile, sOptions:="") { ; input params exact same as first 2 params of LoadPicture()
+        ; Static ImgType := 0       ; thanks to teadrinker: https://www.autohotkey.com/boards/viewtopic.php?p=299834#p299834
+        ; Static BS_ICON := 0x40, BS_BITMAP := 0x80, BM_SETIMAGE := 0xF7
+        
+        ; hImg := LoadPicture(sFile, sOptions, &_type)
+        ; If !this.Text ; thanks to "just me" for advice on getting text and images to display
+            ; ControlSetStyle (ControlGetStyle(this.hwnd) | (!_type?BS_BITMAP:BS_ICON)), this.hwnd
+        ; hOldImg := SendMessage(BM_SETIMAGE, _type, hImg, this.hwnd)
+        
+        ; If (hOldImg)
+            ; (ImgType) ? DllCall("DestroyIcon","UPtr",hOldImg) : DllCall("DeleteObject","UPtr",hOldImg)
+        
+        ; ImgType := _type ; store current img type for next call/release
+    ; }
     
     Type => "ToggleButton"
 }
