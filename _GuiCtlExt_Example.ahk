@@ -10,6 +10,9 @@ IL_Add(IL, "shell32.dll", 129)
 IL_Add(IL, "shell32.dll", 256)
 
 g := Gui("-MinimizeBox -MaximizeBox","Test")
+
+g.SetIcon("shell32.dll",20) ; one of the folder icons
+
 g.OnEvent("close",gui_close)
 g.OnEvent("escape",gui_close)
 ctl := g.Add("ListView","+Report w210 h100 vLV Checked Icon2",["test"])

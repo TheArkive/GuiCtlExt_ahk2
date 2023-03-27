@@ -15,18 +15,129 @@ See comments in GuiCtlExt.ahk for details.
 
 <br>
 
-## Latest Updates
+## Gui
 
-+ added props/methods to Edit: SelText, SelStart, SelEnd, SetSel(), SetCueText()
-+ added props/methods to Combo: SelText, SelStart, SelEnd, SetSel() check_match()
-+ added prop to Combo: AutoComplete (true/false)
-+ added an extension for Gui to facilitate AutoComplete for combo, and other fututre expansions
-+ fixed credits & comments (if I miss one please let me know)
-+ renamed a few internal properties/methods for these changes
-+ changed behavior of .SetSel() for Edit and ComboBox
-+ updated README
+### gui_obj.SetIcon(FileName := "Shell32.dll", Icon:=1)
+
+Sets the icon for the dialog.
 
 <br>
+
+## ComboBox
+
+### ctl.GetCount()
+Returns number of items in Listbox or ComboBox drop window.
+
+### ctl.GetText(row)
+Gets the text of the specified row.
+
+### ctl.GetItems()
+Gets a linear array of all the items in the ListBox or ComboBox drop window.
+
+### ctl.CueText
+Sets/Gets cue text for the ComboBox control.
+
+### ctl.SelEnd
+Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelStart
+Gets the start pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelText
+Gets the selected text.
+
+### ctl.SetSel(start := "", end := "")
+Sets the cursor position or selection, depending on usage.
+
+Note that both start and end are zero based.
+
+End can be larger than Start.
+
+|Value(s)|Result|
+|:--------:|------|
+|`0` |Sets cursor to beginning of text.|
+|`-1`|Sets cursor to end of text.|
+|`0, -1`|Select all text.|
+|`start, end`|Sets selection according to given values.|
+|*blank*|Removes selection, cursor is moved to selection start.|
+
+<br>
+
+## Edit
+
+### ctl.Append(text, top := false)
+Appends text to the bottom of the edit control, unless `top := true`, then text is prepended.
+
+### ctl.SetCueText(txt, Option := false)
+Sets cue text and option.
+
+|Value|Result|
+|-----|------|
+|Option = true|Cue text will persist on control focus.|
+|Option = false|Cue text will disappear on control focus (default).|
+
+### ctl.CueText
+Sets/Gets the cue text for the edit control.  You can also set the `Option` described in `ctl.SetCueText()` above.
+```
+ctl.CueText := "new cue text"
+
+; This will set the cue text and set the Option to true.  The option can also be set to false.
+ctl.CueText[true] := "new cue text"
+```
+Keep in mind that you must specify either only the text, or the text and the option.  You can't only set the option.
+
+### ctl.SelEnd
+Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelStart
+Gets the start pos of the current selection.  This property may act as the "cursor position" when there is no selection.
+
+### ctl.SelText
+Gets the selected text.
+
+### ctl.SetSel(start := "", end := "")
+Sets the cursor position or selection, depending on usage.
+
+Note that both start and end are zero based.
+
+End can be larger than Start.
+
+|:Value(s):|Result|
+|:--------:|------|
+|`0` |Sets cursor to beginning of text.|
+|`-1`|Sets cursor to end of text.|
+|`0, -1`|Select all text.|
+|`start, end`|Sets selection according to given values.|
+|*blank*|Removes selection, cursor is moved to selection start.|
+
+<br>
+
+## ListBox
+
+### ctl.GetCount()
+Returns number of items in Listbox or ComboBox drop window.
+
+### ctl.GetText(row)
+Gets the text of the specified row.
+
+### ctl.GetItems()
+Gets a linear array of all the items in the ListBox or ComboBox drop window.
+
+<br>
+
+## ListView
+
+### ctl.Checked(row)
+Returns true if checked, false if not, for specified row.
+
+### ctl.IconIndex(row)
+Returns the icon index for the row.  Note that the default index for all rows, even without an icon is 1.
+
+### ctl.GetColWidth(col)
+Returns the width of the specified column.
+
+<br>
+
 
 ## Picture Button
 
@@ -82,6 +193,37 @@ Returns `"SplitButton"`.
 
 <br>
 
+## Tab
+
+### ctl.GetCount()
+Returns the number of tabs.
+
+### ctl.GetIcon(tab_num)
+Returns the index of the icon for the specified tab, or 0 if no icon.
+
+### ctl.GetItems()
+Returns an array of tab names.
+
+### ctl.GetName(tab_num)
+Returns the name/text for the specified tab.
+
+### ctl.Insert(pos, name:="", icon:="")
+Inserts a tab at specified position.  Name/Text and Icon are optional.  The tab originally in `pos` is moved to the right, along with all other tabs to the rigth of `pos`.
+
+### ctl.RowCount
+Returns the current number of tab rows.
+
+### ctl.SetIcon(tab_num,icon:=0)
+Sets or removes the icon for the specified tab.  Specify `0` for the 2nd parameter, or omit it to remove the specified tab icon.
+
+### ctl.SetImageList(hList)
+Sets the specified image list created with `IL_Create()` so that icons can be added to tabs.
+
+### ctl.SetName(tab_num,name:="")
+Sets or removes the name/text for the specified tab.  Specify `""` for the 2nd parameter, or omit it to remove the specified tab name/text.
+
+<br>
+
 ## ToggleButton
 
 ### Gui.AddToggleButton(sOptions := "", sText := "")
@@ -93,115 +235,5 @@ Returns `"SplitButton"`.
 
 <br>
 
-## ListBox
 
-### ctl.GetCount()
-Returns number of items in Listbox or ComboBox drop window.
 
-### ctl.GetText(row)
-Gets the text of the specified row.
-
-### ctl.GetItems()
-Gets a linear array of all the items in the ListBox or ComboBox drop window.
-
-<br>
-
-## ComboBox
-
-### ctl.GetCount()
-Returns number of items in Listbox or ComboBox drop window.
-
-### ctl.GetText(row)
-Gets the text of the specified row.
-
-### ctl.GetItems()
-Gets a linear array of all the items in the ListBox or ComboBox drop window.
-
-### ctl.CueText
-Sets/Gets cue text for the ComboBox control.
-
-### ctl.SelEnd
-Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
-
-### ctl.SelStart
-Gets the start pos of the current selection.  This property may act as the "cursor position" when there is no selection.
-
-### ctl.SelText
-Gets the selected text.
-
-### ctl.SetSel(start := "", end := "")
-Sets the cursor position or selection, depending on usage.
-
-Note that both start and end are zero based.
-
-End can be larger than Start.
-
-|Value(s)|Result|
-|:--------:|------|
-|`0` |Sets cursor to beginning of text.|
-|`-1`|Sets cursor to end of text.|
-|`0, -1`|Select all text.|
-|`start, end`|Sets selection according to given values.|
-|*blank*|Removes selection, cursor is moved to selection start.|
-
-<br>
-
-## ListView
-
-### ctl.Checked(row)
-Returns true if checked, false if not, for specified row.
-
-### ctl.IconIndex(row)
-Returns the icon index for the row.  Note that the default index for all rows, even without an icon is 1.
-
-### ctl.GetColWidth(col)
-Returns the width of the specified column.
-
-<br>
-
-## Edit
-
-### ctl.Append(text, top := false)
-Appends text to the bottom of the edit control, unless `top := true`, then text is prepended.
-
-### ctl.SetCueText(txt, Option := false)
-Sets cue text and option.
-
-|Value|Result|
-|-----|------|
-|Option = true|Cue text will persist on control focus.|
-|Option = false|Cue text will disappear on control focus (default).|
-
-### ctl.CueText
-Sets/Gets the cue text for the edit control.  You can also set the `Option` described in `ctl.SetCueText()` above.
-```
-ctl.CueText := "new cue text"
-
-; This will set the cue text and set the Option to true.  The option can also be set to false.
-ctl.CueText[true] := "new cue text"
-```
-Keep in mind that you must specify either only the text, or the text and the option.  You can't only set the option.
-
-### ctl.SelEnd
-Gets the end pos of the current selection.  This property may act as the "cursor position" when there is no selection.
-
-### ctl.SelStart
-Gets the start pos of the current selection.  This property may act as the "cursor position" when there is no selection.
-
-### ctl.SelText
-Gets the selected text.
-
-### ctl.SetSel(start := "", end := "")
-Sets the cursor position or selection, depending on usage.
-
-Note that both start and end are zero based.
-
-End can be larger than Start.
-
-|:Value(s):|Result|
-|:--------:|------|
-|`0` |Sets cursor to beginning of text.|
-|`-1`|Sets cursor to end of text.|
-|`0, -1`|Select all text.|
-|`start, end`|Sets selection according to given values.|
-|*blank*|Removes selection, cursor is moved to selection start.|

@@ -300,12 +300,6 @@ class Tab_Ext extends Gui.Tab {
     
     GetCount() => SendMessage(0x1304, 0, 0, this.hwnd) ; TCM_GETITEMCOUNT
     
-    Insert(tab_num, name:="", icon:="") { ; TCM_INSERTITEM := 0x133E / TCM_INSERTITEMA := 0x1307
-        TCITEM := Tab_Ext.TCITEM(), TCITEM.mask := 0x3 ; TCIF_TEXT | TCIF_IMAGE := 0x3
-        TCITEM.Text := StrPtr(name), TCITEM.Icon := icon-1
-        SendMessage(this.u?0x133E:0x1307,tab_num-1,TCITEM.ptr,this.hwnd)
-    }
-    
     GetIcon(tab_num) => this._GetItem(tab_num-1).Icon+1 ; gets icon index in ImgList
     
     GetItems() { ; returns array of tab names
@@ -317,6 +311,12 @@ class Tab_Ext extends Gui.Tab {
     
     GetName(tab_num) => StrGet(this._GetItem(tab_num-1).Text)
     
+    Insert(pos, name:="", icon:="") { ; TCM_INSERTITEM := 0x133E / TCM_INSERTITEMA := 0x1307
+        TCITEM := Tab_Ext.TCITEM(), TCITEM.mask := 0x3 ; TCIF_TEXT | TCIF_IMAGE := 0x3
+        TCITEM.Text := StrPtr(name), TCITEM.Icon := icon-1
+        SendMessage(this.u?0x133E:0x1307,pos-1,TCITEM.ptr,this.hwnd)
+    }
+    
     RowCount => SendMessage(0x132C, 0, 0, this.hwnd) ; TCM_GETROWCOUNT
     
     SetIcon(tab_num,icon:=0) {
@@ -324,14 +324,14 @@ class Tab_Ext extends Gui.Tab {
         TCITEM.Icon := icon-1, this._SetItem(tab_num-1,TCITEM)
     }
     
+    SetImageList(hList) => SendMessage(0x1303, 0, hList, this.hwnd) ; TCM_SETIMAGELIST
+    
     SetName(tab_num, name:="") {
         If (StrLen(name) > 127) ; not ideal, but seems to be necessary
             throw Error("Tab name too long.",-1)
         TCITEM := Tab_Ext.TCITEM(), TCITEM.mask := 1, TCITEM.Text := StrPtr(name) ; TCIF_TEXT:=1
         this._SetItem(tab_num-1,TCITEM)
     }
-    
-    SetImageList(hList) => SendMessage(0x1303, 0, hList, this.hwnd) ; TCM_SETIMAGELIST
     
     _GetItem(i) { ; TCM_GETITEM := 0x133C / TCM_GETITEMA := 0x1305
         If i >= this.GetCount()
