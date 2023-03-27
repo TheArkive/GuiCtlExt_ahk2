@@ -40,15 +40,28 @@ btn := g.AddToggleButton("vToggleBtn w80 h32","Test")   ; Icons+Text on a Toggle
 btn.OnEvent("click",gui_events)                         ; Remove button text to get a ToggleButton with an icon.
 btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
-ctl := g.Add("Edit","xm w200 h40 vMyEdit1 +HScroll400 -Wrap")
+ctl := g.Add("Edit","xm w200 r1 vMyEdit1 -Wrap")
+; to set cue text do this ...
 ctl.CueText[true] := "Test Cue Edit Text"
-; msgbox ctl.Length
-; ctl.CueText("blah blah",1)
-ctl.Value := "abcdefg aaaaa aaaaaa aaaaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaaaaa aaaaaaa"
+;      - ... OR THIS ... -
 ctl.SetCueText("Test Cue Edit Text",true) ; set/change option of cue to persist on control focus (instead of disappear)
                                           ; ctl.CueText also works with edit control
 
-g.show("h300 w300")
+ctl := g.Add("Tab3","vTabs w210",["Tab1","Tab2"])
+ctl.SetImageList(IL)
+
+ctl.UseTab("Tab1")
+
+g.Add("Button","vTabData","Tab Data").OnEvent("click",gui_events)
+g.Add("Button","vTabName x+0","Change Tab Name").OnEvent("click",gui_events)
+g.Add("Button","vNoTabIcon xm+10 y+0","Remove Icon").OnEvent("click",gui_events)
+g.Add("Button","vTabIcon x+0","Add Icon").OnEvent("click",gui_events)
+
+ctl.SetIcon(1,2), ctl.SetIcon(2,1)
+
+ctl.UseTab()
+
+g.show("w300")
 
 gui_close(*) {
     ExitApp
@@ -64,15 +77,17 @@ gui_events(ctl, info) {
     } Else If (ctl.Name = "PicBtn")
         msgbox "You clicked the pic btn."
     Else If (ctl.name = "Data") {
-        LVr := 1, LBr := 2, CBr := 3, LBi := "", CBi := ""
+        LVr := 1 ; ListView row - change and experiment
+        LBr := 2 ; ListBox row - change and experiment
+        CBr := 3 ; ComboBox row - change and experiment
+        
+        LBi := "", CBi := "" ; ListBox / ComboBox data init
         
         For item in g["LB"].GetItems()
             LBi .= (LBi?"`r`n`t":"`t") item 
         
         For item in g["CB"].GetItems()
             CBi .= (CBi?"`r`n`t":"`t") item 
-        
-        
         
         MsgBox "ListView`r`n`r`n"
              . "`tIconIndex Row " LVr ": " g["LV"].IconIndex(LVr) "`r`n"
@@ -91,6 +106,23 @@ gui_events(ctl, info) {
              . "`tItems:`r`n" CBi
     } Else If (ctl.name = "ToggleBtn") {
         Msgbox "Value: " ctl.Value
+    } Else If (ctl.name = "TabData") {
+        TB := ctl.gui["Tabs"]
+        MsgBox "Tab 1`n"
+             . "    Name: " TB.GetName(1) "`n"
+             . "    Icon: " TB.GetIcon(1) "`n`n"
+             . "Tab 2`n"
+             . "    Name: " TB.GetName(2) "`n"
+             . "    Icon: " TB.GetIcon(2)
+    } Else If (ctl.name = "TabName") {
+        TB := ctl.gui["Tabs"]
+        TB.SetName(2,"Name Changed")
+    } Else If (ctl.name = "NoTabIcon") {
+        TB := ctl.gui["Tabs"]
+        TB.SetIcon(2) ; no icon param, or specify 0
+    } Else If (ctl.name = "TabIcon") {
+        TB := ctl.gui["Tabs"]
+        TB.SetIcon(2,1)
     }
 }
 
@@ -123,11 +155,5 @@ F4::{
     Global g
     msgbox g["CB"].SelText
 }
-F5::{
-    Global g
-    ; dbg( g["CB"].CaretPos )
-    ; g["CB"].SetSel(-1)
-    g["MyEdit1"].SetScroll(20,"h")
-    g["MyEdit1"].Redraw()
-}
+
 
