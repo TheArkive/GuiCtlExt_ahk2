@@ -14,12 +14,14 @@
 ; GuiControl_Ext
 ; ==================================================================
 
-; class GuiCtl_Ext extends Gui.Control { ; apply common stuff to other gui controls
-    ; Static __New() {
-        ; For p in this.Prototype.OwnProps() 
-            ; (p!="__Class") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
-    ; }
-; }
+class GuiCtl_Ext extends Gui.Control { ; apply common stuff to other gui controls
+    Static __New() {
+        For p in this.Prototype.OwnProps() 
+            (p!="__Class") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
+    }
+    
+    Destroy() => DllCall("DestroyWindow", "UInt", this.hwnd)
+}
 
 class ComboBox_Ext extends Gui.ComboBox { ; also has GetItems() method
     Static __New() {
