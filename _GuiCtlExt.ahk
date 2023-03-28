@@ -20,7 +20,7 @@ class GuiCtl_Ext extends Gui.Control { ; apply common stuff to other gui control
             (p!="__Class") ? super.Prototype.DefineProp(p,this.Prototype.GetOwnPropDesc(p)) : ""
     }
     
-    Destroy() => DllCall("DestroyWindow", "UInt", this.hwnd)
+    Destroy() => DllCall("DestroyWindow", "UPtr", this.hwnd)
 }
 
 class ComboBox_Ext extends Gui.ComboBox { ; also has GetItems() method
