@@ -1,6 +1,6 @@
 ; AHK v2
 #INCLUDE _GuiCtlExt.ahk
-; #Include _JXON.ahk
+#Include _JXON.ahk
 
 Global g
 
@@ -10,11 +10,12 @@ IL_Add(IL, "shell32.dll", 129)
 IL_Add(IL, "shell32.dll", 256)
 
 g := Gui("-MinimizeBox -MaximizeBox","Test")
-
+g.SetFont("s10","Consolas")
 g.SetIcon("shell32.dll",20) ; one of the folder icons
 
 g.OnEvent("close",gui_close)
 g.OnEvent("escape",gui_close)
+
 ctl := g.Add("ListView","+Report w210 h100 vLV Checked Icon2",["test"])
 ctl.SetImageList(IL,1)
 ctl.Add("check Icon3","Row1"), hwnd := ctl.hwnd
@@ -22,8 +23,15 @@ ctl.Add("icon1","Row2")
 ctl.Opt("+Report")
 ctl.ModifyCol()
 
-g.Add("ListBox","w100 h100 vLB",["ListBox Item 1","ListBox Item 2","ListBox Item 3"])
-ctl := g.Add("ComboBox","x+10 yp w150 h100 vCB Section",["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4","AutoC Test"])
+list := ["ListBox Item 1","ListBox Item 2","ListBox Item 3","ListBox Item 4","ListBox Item 5","asdf","asdf","asdf","asdf","asdf"]
+ctl := g.Add("ListBox","w200 h100 vLB Multi",list)
+ctl.SelRange(2,4)       ; select a range
+ctl.SelRange(3,5,false) ; deseelct a range
+ctl.TopIndex := 3
+
+list := ["ComboBox Item 1","ComboBox Item 2","ComboBox Item 3","ComboBox Item 4","AutoC Test","a","b","c","d","e","f","g","h","i","j","k"]
+ctl := g.Add("ComboBox","x+10 yp w150 h100 vCB r5 Section",list)
+
 ctl.CueText := "Test Cue Text"
 ctl.AutoComplete := true
 ctl.Text := "abcdefg"
@@ -44,11 +52,9 @@ btn.OnEvent("click",gui_events)                         ; Remove button text to 
 ; btn.SetImg("netshell.dll","Icon151 w20 h20")            ; Maybe a different combo of buttons styles will work?
 
 ctl := g.Add("Edit","xm w200 r1 vMyEdit1 -Wrap")
-; to set cue text do this ...
-ctl.CueText[true] := "Test Cue Edit Text"
-;      - ... OR THIS ... -
-ctl.SetCueText("Test Cue Edit Text",true) ; set/change option of cue to persist on control focus (instead of disappear)
-                                          ; ctl.CueText also works with edit control
+
+ctl.CueOption := 1                  ; do this first, if you want this option (cue visible even when ctl is focused)
+ctl.CueText := "Test Cue Edit Text" ; then set the cue text, or use ctl.SetCueText(txt, opt) to set both txt and option
 
 ctl := g.Add("Tab3","vTabs w210",["Tab1","Tab2"])
 ctl.SetImageList(IL)
@@ -64,7 +70,7 @@ ctl.SetIcon(1,2), ctl.SetIcon(2,1)
 
 ctl.UseTab()
 
-g.show("w300")
+g.show("")
 
 gui_close(*) {
     ExitApp
@@ -84,7 +90,7 @@ gui_events(ctl, info) {
         LBr := 2 ; ListBox row - change and experiment
         CBr := 3 ; ComboBox row - change and experiment
         
-        LBi := "", CBi := "" ; ListBox / ComboBox data init
+        LBi := "", CBi := "" ; ListBox / ComboBox items init
         
         For item in g["LB"].GetItems()
             LBi .= (LBi?"`r`n`t":"`t") item 
@@ -146,17 +152,39 @@ dbg(_in) { ; AHK v2
 }
 
 F2::{
-    Global g
-    g["MyEdit1"].CueText := "Change the cue!"
-    g["MyEdit1"].SetSel(3,5)
+    btn := g.AddPicButton("vPicBtn w50 h24","netshell.dll","Icon151 w20 h20","Test") ; 24 x 24
+    btn.OnEvent("click",gui_events)
 }
 F3::{
-    Global g
-    g["MyEdit1"].SetSel()
+    p := g["PicBtn"].Destroy()
+    msgbox g["PicBtn"].hwnd
 }
-F4::{
+F4::g["CB"].Show()
+F5::{
     Global g
-    msgbox g["CB"].SelText
+    c := g["CB"]
+    
+    ; c.Show()
+    ; Sleep(100)
+    ; dbg( jxon_dump(c.Test,4) )
+    
+    ; c.Opt("r10")
+    
+    c.ListHeight(10)
+    
+    ; c.GetPos(,,,&h)
+    ; a := c.Test
+    ; h2 := a[4] - a[2]
+    ; msgbox H " / " h2
+    
+    ; c.Move(,,,c.ItemHeight(0) + ((c.ItemHeight()+0) * 10) + 2)
+    ; msgbox Format("0x{:08X}",c.Style)
+    
+    ; Msgbox Format("0x{:08X}",c.Style)
+    ; msgbox c.ItemHeight(0)
+    ; Loop 5
+        ; msgbox "Item " a_Index ": " c.ItemHeight(A_Index)
 }
+
 
 
